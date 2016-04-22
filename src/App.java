@@ -6,8 +6,8 @@ public class App {
         Header test = new Header();
 //        test.printMap();
 
-        Header text2 = new Header( "test", true );
-        text2.printMap();
+        Header test2 = new Header( "test", true );
+        test2.printMap();
 
     }
 }
