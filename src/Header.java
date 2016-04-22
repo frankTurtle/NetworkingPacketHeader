@@ -44,58 +44,52 @@ public class Header {
         }
     }
 
+    // Constructor with parameters
+    // takes a string and a boolean
+    // string can be the actual raw data or a file name
+    // boolean value determines if its a file name or raw data and acts  accordingly
     public Header( String input, boolean isFilename ){
-        data = new HashMap<>(); //..................... instantiate data variable
+        data = new HashMap<>(); //.................................................................. instantiate data variable
 
-        for( String row[] : PACKET_ORDER ){ //......... loop through each key
+        for( String row[] : PACKET_ORDER ){ //...................................................... loop through each key
             for( String key : row ){
                 int size = NUM_OF_BITS.get( key );
-                int[] bitArray = new int[ size ]; //... create an array with the size of the value from HashMap
-                data.put( key, bitArray ); //.......... put into data HashMap!
+                int[] bitArray = new int[ size ]; //................................................ create an array with the size of the value from HashMap
+                data.put( key, bitArray ); //....................................................... put into data HashMap!
             }
         }
 
-        if( isFilename ){
-            String line = null;
-            int bitCount = 0;
-            int row = 0;
+        if( isFilename ){ //........................................................................ if its a filename and not raw data
+            String line = null; //.................................................................. variable to capture the line from the file
+            int row = 0; //......................................................................... keeps track of which row its on
 
             try {
-                FileReader fileReader = new FileReader( input + ".txt" );
-                BufferedReader bufferedReader = new BufferedReader( fileReader );
+                FileReader fileReader = new FileReader( input + ".txt" ); //........................ open up the file
+                BufferedReader bufferedReader = new BufferedReader( fileReader ); //................ pass it along to buffered reader in the event of overflow
 
-                while( (line = bufferedReader.readLine()) != null ) {
-                    for( int index = 0; index < PACKET_ORDER[row].length; index++ ){
-                        String key = PACKET_ORDER[row][index];
-                        int length = NUM_OF_BITS.get( key );
-                        int[] dataArray = data.get( key );
+                while( (line = bufferedReader.readLine()) != null ) { //............................ while there are lines left to read
+                    for( int index = 0; index < PACKET_ORDER[row].length; index++ ){ //............. loop through each array in the packet labels
+                        String key = PACKET_ORDER[row][index]; //................................... get the key
+                        int length = NUM_OF_BITS.get( key ); //..................................... determine length of the array with the key
+                        int[] dataArray = data.get( key ); //....................................... pointer to that array so we can manipulate
 
-                        for( int bitIndex = 0; bitIndex < length; bitIndex++ ){
-//                            System.out.println( Arrays.toString( dataArray ));
-//                            System.out.println( line.charAt( bitIndex ) );
-                            if(  line.charAt(bitIndex) != '0' ){
-                                dataArray[ bitIndex ]++;
-                            }
-//                            dataArray[ bitIndex ] = line.charAt( bitIndex );
-//                            System.out.println( Arrays.toString( dataArray ));
-//                            System.out.println( "*********\n" );
+                        for( int bitIndex = 0; bitIndex < length; bitIndex++ ){ //.................. loop through each value in the array from the key
+                            if(  line.charAt(bitIndex) != '0' ){ dataArray[ bitIndex ]++; } //...... if it's not a 0 increment the value in the current array to a 1
                         }
 
-//                        System.out.println( "***\n" );
-
-                        line = line.substring( length );
+                        line = line.substring( length ); //......................................... cut the data we just processed out of the line
                     }
 
-                    row++;
+                    row++; //....................................................................... once the line is finished go to the next one
                 }
 
-                bufferedReader.close();
+                bufferedReader.close(); //.......................................................... close the file connection
             }
-            catch( FileNotFoundException ex) {
+            catch( FileNotFoundException ex) { //................................................... if the file doesnt exist
                 System.out.println( "Unable to open file '" + input + "'" );
                 ex.printStackTrace();
             }
-            catch( IOException ex) {
+            catch( IOException ex) { //............................................................. if were unable to read the file
                 System.out.println( "Error reading file '" + input + "'" );
             }
         }
