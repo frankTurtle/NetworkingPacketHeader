@@ -2,6 +2,7 @@
  * Created by Barret J. Nobel on 4/22/2016.
  */
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -25,10 +26,22 @@ public class Header {
 
     private Map< String, int[] > data; //....................................... variable to contain the data passed in
 
+    // Default Constructor
+    // initializes data with array's full of 0s
+    public Header(){
+        data = new HashMap<>(); //................. instantiate data variable
+
+        for( String key : PACKET_ORDER ){ //....... loop through each key
+            int size = NUM_OF_BITS.get( key );
+            int[] bitArray = new int[ size ]; //... create an array with the size of the value from hashmap
+            data.put( key, bitArray ); //.......... put into data hashmap!
+        }
+    }
+
     // Method to return a Map object representing
     // the packet labels and size's for the array's
     private static Map<String, Integer> createMap() {
-        Map<String, Integer> result = new HashMap<String, Integer>(); //. hashmap to return
+        Map< String, Integer > result = new HashMap<>(); //.............. hashmap to return
         result.put( VERSION, 4 ); //..................................... put all final key's written above with their values
         result.put( HEADER_LENGTH, 4);
         result.put( SERVICE_TYPE, 8);
@@ -59,12 +72,16 @@ public class Header {
 
     // Method to test out the creation of hte hashmap
     public void printMap(){
-        for( String key : NUM_OF_BITS.keySet() ){
-            System.out.println( NUM_OF_BITS.get(key) );
-        }
+//        for( String key : NUM_OF_BITS.keySet() ){
+//            System.out.println( NUM_OF_BITS.get(key) );
+//        }
+//
+//        for( String label : PACKET_ORDER ){
+//            System.out.println( label );
+//        }
 
-        for( String label : PACKET_ORDER ){
-            System.out.println( label );
+        for( String key : PACKET_ORDER ){
+            System.out.println( Arrays.toString(data.get(key)) );
         }
     }
 }
