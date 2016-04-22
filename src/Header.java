@@ -2,6 +2,10 @@
  * Created by Barret J. Nobel on 4/22/2016.
  */
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -9,7 +13,7 @@ import java.util.Map;
 
 public class Header {
     private static final Map< String, Integer > NUM_OF_BITS = createMap(); //... variable to hold the Packet strings and array lengths
-    private static final String VERSION        = "Version"; //.................. final variables to be used for the hashmap keys
+    private static final String VERSION        = "Version"; //.................. final variables to be used for the HashMap keys
     private static final String HEADER_LENGTH  = "Header Length";
     private static final String SERVICE_TYPE   = "Service Type";
     private static final String TOTAL_LENGTH   = "Total Length";
@@ -22,26 +26,85 @@ public class Header {
     private static final String SOURCE_ADDRESS = "Source Address";
     private static final String DEST_ADDRESS   = "Destination Address";
     private static final int SIZE = 160; //..................................... variable used to check if header size is legit
-    private static final String[] PACKET_ORDER = createPacketOrder(); //........ variable to have the order of packets align with design
+    private static final String[][] PACKET_ORDER = createPacketOrder(); //...... variable to have the order of packets align with design
 
     private Map< String, int[] > data; //....................................... variable to contain the data passed in
 
     // Default Constructor
     // initializes data with array's full of 0s
     public Header(){
-        data = new HashMap<>(); //................. instantiate data variable
+        data = new HashMap<>(); //..................... instantiate data variable
 
-        for( String key : PACKET_ORDER ){ //....... loop through each key
-            int size = NUM_OF_BITS.get( key );
-            int[] bitArray = new int[ size ]; //... create an array with the size of the value from hashmap
-            data.put( key, bitArray ); //.......... put into data hashmap!
+        for( String row[] : PACKET_ORDER ){ //......... loop through each key
+            for( String key : row ){
+                int size = NUM_OF_BITS.get( key );
+                int[] bitArray = new int[ size ]; //... create an array with the size of the value from HashMap
+                data.put( key, bitArray ); //.......... put into data HashMap!
+            }
+        }
+    }
+
+    public Header( String input, boolean isFilename ){
+        data = new HashMap<>(); //..................... instantiate data variable
+
+        for( String row[] : PACKET_ORDER ){ //......... loop through each key
+            for( String key : row ){
+                int size = NUM_OF_BITS.get( key );
+                int[] bitArray = new int[ size ]; //... create an array with the size of the value from HashMap
+                data.put( key, bitArray ); //.......... put into data HashMap!
+            }
+        }
+
+        if( isFilename ){
+            String line = null;
+            int bitCount = 0;
+            int row = 0;
+
+            try {
+                FileReader fileReader = new FileReader( input + ".txt" );
+                BufferedReader bufferedReader = new BufferedReader( fileReader );
+
+                while( (line = bufferedReader.readLine()) != null ) {
+                    for( int index = 0; index < PACKET_ORDER[row].length; index++ ){
+                        String key = PACKET_ORDER[row][index];
+                        int length = NUM_OF_BITS.get( key );
+                        int[] dataArray = data.get( key );
+
+                        for( int bitIndex = 0; bitIndex < length; bitIndex++ ){
+//                            System.out.println( Arrays.toString( dataArray ));
+//                            System.out.println( line.charAt( bitIndex ) );
+                            if(  line.charAt(bitIndex) != '0' ){
+                                dataArray[ bitIndex ]++;
+                            }
+//                            dataArray[ bitIndex ] = line.charAt( bitIndex );
+//                            System.out.println( Arrays.toString( dataArray ));
+//                            System.out.println( "*********\n" );
+                        }
+
+//                        System.out.println( "***\n" );
+
+                        line = line.substring( length );
+                    }
+
+                    row++;
+                }
+
+                bufferedReader.close();
+            }
+            catch( FileNotFoundException ex) {
+                System.out.println( "Unable to open file '" + input + "'" );
+                ex.printStackTrace();
+            }
+            catch( IOException ex) {
+                System.out.println( "Error reading file '" + input + "'" );
+            }
         }
     }
 
     // Method to return a Map object representing
     // the packet labels and size's for the array's
     private static Map<String, Integer> createMap() {
-        Map< String, Integer > result = new HashMap<>(); //.............. hashmap to return
+        Map< String, Integer > result = new HashMap<>(); //.............. HashMap to return
         result.put( VERSION, 4 ); //..................................... put all final key's written above with their values
         result.put( HEADER_LENGTH, 4);
         result.put( SERVICE_TYPE, 8);
@@ -59,18 +122,18 @@ public class Header {
 
     // Method to return a String array with the proper order
     // inline with the packet header architecture
-    private static String[] createPacketOrder(){
-        String[] returnString = { VERSION, HEADER_LENGTH, SERVICE_TYPE, TOTAL_LENGTH,
-                                  ID, FLAG, FRAG_OFFSET,
-                                  TTLIVE, PROTOCOL, CHECKSUM,
-                                  SOURCE_ADDRESS,
-                                  DEST_ADDRESS
+    private static String[][] createPacketOrder(){
+        String[][] returnString = { {VERSION, HEADER_LENGTH, SERVICE_TYPE, TOTAL_LENGTH},
+                                    {ID, FLAG, FRAG_OFFSET},
+                                    {TTLIVE, PROTOCOL, CHECKSUM},
+                                    {SOURCE_ADDRESS},
+                                    {DEST_ADDRESS}
                                 };
 
         return returnString;
     }
 
-    // Method to test out the creation of hte hashmap
+    // Method to test out the creation of hte HashMap
     public void printMap(){
 //        for( String key : NUM_OF_BITS.keySet() ){
 //            System.out.println( NUM_OF_BITS.get(key) );
@@ -80,8 +143,8 @@ public class Header {
 //            System.out.println( label );
 //        }
 
-        for( String key : PACKET_ORDER ){
-            System.out.println( Arrays.toString(data.get(key)) );
+        for( String row[] : PACKET_ORDER ){
+            for( String key : row ) System.out.println( Arrays.toString(data.get(key)) );
         }
     }
 }
