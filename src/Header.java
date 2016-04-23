@@ -77,11 +77,11 @@ public class Header {
 
                 bufferedReader.close(); //.......................................................... close the file connection
             }
-            catch( FileNotFoundException ex) { //................................................... if the file doesnt exist
+            catch( FileNotFoundException ex ){ //................................................... if the file doesnt exist
                 System.out.println( "Unable to open file '" + input + "'" );
                 ex.printStackTrace();
             }
-            catch( IOException ex) { //............................................................. if were unable to read the file
+            catch( IOException ex ){ //............................................................. if were unable to read the file
                 System.out.println( "Error reading file '" + input + "'" );
             }
         }
@@ -89,7 +89,7 @@ public class Header {
 
     // Method to return a Map object representing
     // the packet labels and size's for the array's
-    private static Map<String, Integer> createMap() {
+    private static Map< String, Integer > createMap(){
         Map< String, Integer > result = new HashMap<>(); //.............. HashMap to return
         result.put( VERSION, 4 ); //..................................... put all final key's written above with their values
         result.put( HEADER_LENGTH, 4);
@@ -103,7 +103,7 @@ public class Header {
         result.put( CHECKSUM, 16);
         result.put( SOURCE_ADDRESS, 32);
         result.put( DEST_ADDRESS, 32);
-        return Collections.unmodifiableMap(result); //.................. make it final
+        return Collections.unmodifiableMap( result ); //................ make it final
     }
 
     // Method to return a String array with the proper order
@@ -130,7 +130,7 @@ public class Header {
 //        }
 
         for( String row[] : PACKET_ORDER ){
-            for( String key : row ) System.out.println( Arrays.toString(data.get(key)) );
+            for( String key : row ) System.out.println( key + " " + Arrays.toString(data.get(key)) );
         }
     }
 }
