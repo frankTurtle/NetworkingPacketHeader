@@ -28,7 +28,7 @@ public class Header {
     private static final int SIZE = 160; //..................................... variable used to check if header size is legit
     private static final String[][] PACKET_ORDER = createPacketOrder(); //...... variable to have the order of packets align with design
 
-    public Map< String, int[] > data; //....................................... variable to contain the data passed in
+    private Map< String, int[] > data; //....................................... variable to contain the data passed in
 
     // Default Constructor
     // initializes data with array's full of 0s
@@ -147,5 +147,39 @@ public class Header {
         for( String row[] : PACKET_ORDER ){
             for( String key : row ) System.out.println( key + " " + Arrays.toString(data.get(key)) );
         }
+    }
+
+    // Method to return the data map
+    // NEEDS TO BE UPDATED TO RETURN A DEEP COPY
+    public Map< String, int[] > getData(){ return data; }
+
+    // Method to return a formatted String representing all data
+    // Overridden
+    public String toString(){
+        String returnString = ""; //......................................................... variable to return
+
+        for( String row[] : PACKET_ORDER ){ //............................................... loop through each row in packet
+            for( String key : row ){ //...................................................... loop through each item in that row
+                String value = ( key.equals(SOURCE_ADDRESS) || key.equals(DEST_ADDRESS) ) //. if its the source or destination address pass to special method
+                        ? this.binaryIPConvert( data.get(key) )
+                        : this.binaryToDecimal( data.get(key) ); //.......................... or just get the normal decimal value
+                returnString += String.format( "%21s: %s%n", key, value ); //................ build return string
+            }
+        }
+
+        return returnString;
+    }
+
+    // Method to convert an array of binary data representing the IP address into a String
+    private String binaryIPConvert( int[] ipAddress ){
+        String returnString = ""; //............................................... variable to return
+
+        for( int sections = 0; sections < 4; sections++ ){ //...................... loop through 4 sections for address
+            int start = sections * 8; //........................................... starting index for the subarray
+            int[] tempArray = Arrays.copyOfRange(ipAddress, start, start + 8); //.. sub array of the next section
+            returnString += binaryToDecimal( tempArray ) + "."; //................. build the string to return
+        }
+
+        return returnString.substring( 0, returnString.length() - 1 ); //.......... return a substring to cut off the last period
     }
 }

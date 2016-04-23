@@ -8,8 +8,7 @@ public class App {
 
         Header test2 = new Header( "test", true );
 //        test2.printMap();
-        System.out.println( test2.binaryToDecimal( test2.data.get("Total Length")) );
-
-
+//        System.out.println( test2.binaryToDecimal( test2.getData().get("Total Length")) );
+        System.out.println( test2 );
     }
 }
