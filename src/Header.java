@@ -49,15 +49,7 @@ public class Header {
     // string can be the actual raw data or a file name
     // boolean value determines if its a file name or raw data and acts  accordingly
     public Header( String input, boolean isFilename ){
-        data = new HashMap<>(); //.................................................................. instantiate data variable
-
-        for( String row[] : PACKET_ORDER ){ //...................................................... loop through each key
-            for( String key : row ){
-                int size = NUM_OF_BITS.get( key );
-                int[] bitArray = new int[ size ]; //................................................ create an array with the size of the value from HashMap
-                data.put( key, bitArray ); //....................................................... put into data HashMap!
-            }
-        }
+        this(); //.................................................................................. initializes data array
 
         if( isFilename ){ //........................................................................ if its a filename and not raw data
             String line = null; //.................................................................. variable to capture the line from the file
