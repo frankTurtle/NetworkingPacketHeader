@@ -28,7 +28,7 @@ public class Header {
     private static final int SIZE = 160; //..................................... variable used to check if header size is legit
     private static final String[][] PACKET_ORDER = createPacketOrder(); //...... variable to have the order of packets align with design
 
-    private Map< String, int[] > data; //....................................... variable to contain the data passed in
+    public Map< String, int[] > data; //....................................... variable to contain the data passed in
 
     // Default Constructor
     // initializes data with array's full of 0s
@@ -117,6 +117,21 @@ public class Header {
                                 };
 
         return returnString;
+    }
+
+    // Method to convert an array of binary into a decimal number
+    // returns as a String
+    public static String binaryToDecimal( int[] binaryArray ){
+        String returnString = ""; //.................................... String to return
+        int value = 0; //............................................... keep a running total
+
+        for( int i = 0; i < binaryArray.length; i++ ){ //............... loop through each binary in array
+            if( binaryArray[i] > 0 ){  //............................... only care if it's a 1
+                value += Math.pow( 2,(binaryArray.length - (1+i)) ); //. add it up
+            }
+        }
+
+        return returnString + value;
     }
 
     // Method to test out the creation of hte HashMap
