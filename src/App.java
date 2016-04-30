@@ -14,10 +14,14 @@ public class App {
     public static void main( String[] args ){
         Header test = new Header( "test", true );
         System.out.println( test );
+//
+//
+//        for( int row = 0; row < routingTable.getTableRows().size(); row++ ){
+//            System.out.println( row+1 + ": "  + Arrays.toString( routingTable.getTableRows().get(row).get(DESTINATION)) );
+//        }
 
+        Options testOptions = new Options( "test", true );
 
-        for( int row = 0; row < routingTable.getTableRows().size(); row++ ){
-            System.out.println( row+1 + ": "  + Arrays.toString( routingTable.getTableRows().get(row).get(DESTINATION)) );
-        }
+        System.out.println( testOptions );
     }
 }

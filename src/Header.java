@@ -59,7 +59,7 @@ public class Header {
                 FileReader fileReader = new FileReader( input + ".txt" ); //........................ open up the file
                 BufferedReader bufferedReader = new BufferedReader( fileReader ); //................ pass it along to buffered reader in the event of overflow
 
-                while( (line = bufferedReader.readLine()) != null ) { //............................ while there are lines left to read
+                while( (line = bufferedReader.readLine()) != null && row < 5 ) { //................. while there are lines left to read
                     for( int index = 0; index < PACKET_ORDER[row].length; index++ ){ //............. loop through each array in the packet labels
                         String key = PACKET_ORDER[row][index]; //................................... get the key
                         int length = NUM_OF_BITS.get( key ); //..................................... determine length of the array with the key
