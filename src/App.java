@@ -9,16 +9,15 @@ public class App {
     private static final String PORT = "port";
     private static final String MTU = "mtu";
     private static final String DESTINATION = "destination";
+    private static RoutingTable routingTable = new RoutingTable();
 
     public static void main( String[] args ){
-        Header test = new Header();
+        Header test = new Header( "test", true );
+        System.out.println( test );
 
-        RoutingTable testTable = new RoutingTable();
 
-        for( int row = 0; row < testTable.getTableRows().size(); row++ ){
-            System.out.println( row+1 + ": "  + Arrays.toString( testTable.getTableRows().get(row).get(DESTINATION)) );
+        for( int row = 0; row < routingTable.getTableRows().size(); row++ ){
+            System.out.println( row+1 + ": "  + Arrays.toString( routingTable.getTableRows().get(row).get(DESTINATION)) );
         }
-
-//        test.printMap();
     }
 }
