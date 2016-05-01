@@ -136,14 +136,6 @@ public class Header {
 
     // Method to test out the creation of hte HashMap
     public void printMap(){
-//        for( String key : NUM_OF_BITS.keySet() ){
-//            System.out.println( NUM_OF_BITS.get(key) );
-//        }
-//
-//        for( String label : PACKET_ORDER ){
-//            System.out.println( label );
-//        }
-
         for( String row[] : PACKET_ORDER ){
             for( String key : row ) System.out.println( key + " " + Arrays.toString(data.get(key)) );
         }
@@ -152,6 +144,8 @@ public class Header {
     // Method to return the data map
     // NEEDS TO BE UPDATED TO RETURN A DEEP COPY
     public Map< String, int[] > getData(){ return data; }
+
+    public String getDestAddress(){ return binaryIPConvert(data.get(DEST_ADDRESS)); }
 
     // Method to return a formatted String representing all data
     // Overridden

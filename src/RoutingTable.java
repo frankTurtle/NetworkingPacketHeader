@@ -3,6 +3,7 @@
  */
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 public class RoutingTable {
@@ -10,6 +11,7 @@ public class RoutingTable {
     private final String PORT = "port";
     private final String MTU = "mtu";
     private final String DESTINATION = "destination";
+    private final String MASK = "11111111101110101010101001010101";
 
     private ArrayList< HashMap<String, int[]> > tableRows; //............ arraylist to hold all routing table info
 
@@ -71,5 +73,69 @@ public class RoutingTable {
     // returns the arraylist of hash tables
     public ArrayList< HashMap<String, int[]> > getTableRows(){ return tableRows; }
 
+    public boolean ipExistInTable( String ipAddress ){
+        String convertedIP = "";
+        String convertedOrigin = "";
+        String convertedDestination = "";
+
+        System.out.println( createIPString(createIPArray(addMaskToAddress(ipAddress, MASK))) );
+
+        for( HashMap<String, int[]> entry : getTableRows() ) {
+            if (createIPString(entry.get(ORIGIN)).equals(ipAddress) ||
+                    createIPString(entry.get(DESTINATION)).equals(ipAddress)) return true;
+
+
+//            System.out.println("IN: " + ipAddress);
+//            System.out.println("ORIGIN: " + createIPString(entry.get(ORIGIN)));
+//            System.out.println("DEST: " + createIPString(entry.get(DESTINATION)) + "\n\n");
+        }
+
+        return false;
+    }
+
+    private String addMaskToAddress( String address, String mask ){
+        String[] binary = address.split( "\\." );
+        String updatedAddress = "";
+        String addressPart;
+
+        System.out.println( Arrays.toString(binary) );
+
+        for( int index = 0; index < binary.length; index++ ){
+            addressPart = Integer.toBinaryString( Integer.parseInt(binary[index]));
+//            String maskPart = mask.substring(index*8, index*8+8);
+            while( (addressPart.length() % 8) != 0 ){ addressPart = String.format( "0%s", addressPart ); }
+            updatedAddress += addressPart;
+
+        }
+
+        long updatedNum = Long.parseLong( updatedAddress,2 );
+        long maskNum = Long.parseLong( MASK,2 );
+        updatedNum = updatedNum & maskNum;
+        updatedAddress = Long.toBinaryString( updatedNum );
+
+//        0110 1110  0010 0000  0010 0000  0101 0000
+
+        return updatedAddress;
+    }
+
+    private String createIPString( int[] arrayToConvert ){
+        String returnString = "";
+
+        for( int ip : arrayToConvert ){ returnString += ip + "."; }
+
+        return returnString.substring( 0, returnString.length() - 1 );
+    }
+
+    private int[] createIPArray( String stringToConvert ){
+        int[] returnString = new int[4];
+        while( (stringToConvert.length() % 8) != 0 ){ stringToConvert = String.format( "0%s", stringToConvert); }
+
+        for( int i = 0; i < returnString.length; i++ ){
+            String temp = stringToConvert.substring(i*8, i*8+8);
+            returnString[ i ] = Integer.parseInt(temp, 2);
+        }
+
+        return returnString;
+    }
 }
 

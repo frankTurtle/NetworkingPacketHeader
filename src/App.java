@@ -14,14 +14,21 @@ public class App {
     public static void main( String[] args ){
         Header test = new Header( "test", true );
         System.out.println( test );
-//
-//
+
 //        for( int row = 0; row < routingTable.getTableRows().size(); row++ ){
 //            System.out.println( row+1 + ": "  + Arrays.toString( routingTable.getTableRows().get(row).get(DESTINATION)) );
 //        }
 
         Options testOptions = new Options( "test", true );
-
         System.out.println( testOptions );
+
+
+        System.out.println( testIpAddress( test.getDestAddress()) );
+
+//        System.out.println( Integer.parseInt(Integer.toBinaryString(110), 2) );
+    }
+
+    private static boolean testIpAddress( String ipAddress ){
+        return new RoutingTable().ipExistInTable( ipAddress );
     }
 }
