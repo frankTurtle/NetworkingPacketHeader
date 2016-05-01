@@ -20,7 +20,8 @@ public class Options {
     private static final String PADDING = "Padding";
 
     private Map< String, int[] > data; //....................................... variable to contain the data passed in
-    private ArrayList< int[] > recordRoute; //................................. variable for all the recordRoute IP Addresses
+    private ArrayList< int[] > recordRoute; //.................................. variable for all the recordRoute IP Addresses
+    private ArrayList< int[] > sourceRoute; //.................................. variable for all the sourceRoute IP addresses
 
     public Options(){
         data = new HashMap<>(); //..................... instantiate data variable
@@ -34,6 +35,7 @@ public class Options {
         }
 
         recordRoute = new ArrayList<>();
+        sourceRoute = new ArrayList<>();
     }
 
     // Constructor with parameters
@@ -69,11 +71,10 @@ public class Options {
                     row++; //....................................................................... once the line is finished go to the next one
                 }
 
-                if( Integer.parseInt(Header.binaryToDecimal(data.get(OPTION_NUMBER))) == 7 ){
+                int optionChosen = Integer.parseInt(Header.binaryToDecimal(data.get(OPTION_NUMBER)));
+
+                if( optionChosen == 7 || optionChosen == 9 ){
                     int ipAddresses = (Integer.parseInt(Header.binaryToDecimal(data.get(LENGTH))) - 3) / 4;
-
-                    System.out.println( ipAddresses );
-
                     while( (line = bufferedReader.readLine()) != null && ipAddresses > 0 ){
                         int[] dataArray = new int[32];
 
@@ -81,10 +82,27 @@ public class Options {
                             if( line.charAt(index) != '0' ){ dataArray[ index ]++; }
                         }
 
-                        recordRoute.add( dataArray );
+                        if( optionChosen == 7 ) recordRoute.add( dataArray );
+                        else sourceRoute.add( dataArray );
                         ipAddresses--;
                     }
                 }
+//
+//                if( Integer.parseInt(Header.binaryToDecimal(data.get(OPTION_NUMBER))) == 9 ){
+//                    int ipAddresses = (Integer.parseInt(Header.binaryToDecimal(data.get(LENGTH))) - 3) / 4;
+//                    while( (line = bufferedReader.readLine()) != null && ipAddresses > 0 ){
+//                        int[] dataArray = new int[32];
+//
+//                        for( int index = 0; index < dataArray.length; index++ ){
+//                            if( line.charAt(index) != '0' ){ dataArray[ index ]++; }
+//                        }
+//
+//                        System.out.println( Arrays.toString( dataArray ) );
+//
+//                        sourceRoute.add( dataArray );
+//                        ipAddresses--;
+//                    }
+//                }
 
                 bufferedReader.close(); //.......................................................... close the file connection
             }
@@ -135,4 +153,6 @@ public class Options {
     }
 
     public ArrayList< int[] > getRecordRoute(){ return recordRoute; }
+
+    public ArrayList< int[] > getSourceRoute(){ return sourceRoute; }
 }

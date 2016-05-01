@@ -29,11 +29,16 @@ public class App {
 //        }
 
 //        Options testOptions = new Options( "test", true );
-        Options test2Options = new Options( "test2", true );
+//        Options test2Options = new Options( "test2", true );
+        Options test3Options = new Options( "test3", true );
 
-        System.out.println( test2Options );
+        System.out.println( test3Options );
 
-        for( int[] num : test2Options.getRecordRoute() ){
+//        for( int[] num : test2Options.getRecordRoute() ){
+//            System.out.println(Arrays.toString(num));
+//        }
+
+        for( int[] num : test3Options.getSourceRoute() ){
             System.out.println(Arrays.toString(num));
         }
 
