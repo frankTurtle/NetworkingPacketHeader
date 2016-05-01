@@ -159,8 +159,14 @@ public class Header {
     // Method to get the total bytes of packet
     public int getTotalBytes() { return totalBytes; }
 
+    // Method to update the totalLength
     public void setTotalLength( int[] totalLength) {
         data.put( TOTAL_LENGTH, totalLength );
+    }
+
+    // Method to update the TTL
+    public void setTTLIVE( int[] ttlive ){
+        data.put( TTLIVE, ttlive );
     }
 
     // Method to return a formatted String representing all data

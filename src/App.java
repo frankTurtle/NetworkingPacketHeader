@@ -47,6 +47,7 @@ public class App {
             if( fragmentPacket(mtu, packetSize) ){
                 System.out.println( "Fragment" );
                 int totalPackets = (int)((double)packetSize / mtu + .5); //.. gets the total number of packets we'll have to send
+                int ttl = Integer.parseInt(Header.binaryToDecimal(testHeader.getData().get(TTLIVE)) ) - 1; //................ update the TTL
                 int dataField;
 
                 for( int send = 0; send < totalPackets; send++ ){
@@ -59,9 +60,10 @@ public class App {
                         testHeader.setTotalLength( binaryToArray(Integer.toBinaryString(totalLength)));
                     }
 
+                    testHeader.setTTLIVE( binaryToArray(Integer.toBinaryString(ttl)) ); //........................................ add new TTL to header
                     dataField = totalLength - headerLength;
 
-                    System.out.println( dataField );
+                    output.add( testHeader.toString() + String.format( "%21s: %s%n", "Data Field", dataField) );
                 }
 
             }
@@ -97,6 +99,7 @@ public class App {
 //        writeToFile( output );
 
 //        System.out.println( Integer.parseInt(Integer.toBinaryString(110), 2) );
+        writeToFile( output, "output" );
     }
 
     // Method to test if the IP is valid for the network
