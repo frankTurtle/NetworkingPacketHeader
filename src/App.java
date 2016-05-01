@@ -8,7 +8,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class App {
@@ -55,7 +54,5 @@ public class App {
         catch( IOException e ){
             System.out.println( "error" + e.toString() );
         }
-
-//        Files.write(file, lines, Charset.forName("UTF-8"), StandardOpenOption.APPEND);
     }
 }
