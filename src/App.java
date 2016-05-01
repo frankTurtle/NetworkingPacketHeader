@@ -60,7 +60,14 @@ public class App {
                         testHeader.setTotalLength( binaryToArray(Integer.toBinaryString(totalLength)));
                     }
 
-                    if( send > 0 ){ testHeader.setHeaderLength( binaryToArray(Integer.toBinaryString(5))); } //.................. if its not the first fragment, adjust header length
+                    if( send > 0 ){
+                        testHeader.setHeaderLength( binaryToArray(Integer.toBinaryString(5)));
+                        if( send + 1 == totalPackets )
+                            testHeader.setFlag( binaryToArray(Integer.toBinaryString(0)));
+                    } //.................. if its not the first fragment, adjust header length
+                    else{
+                        testHeader.setFlag( binaryToArray(Integer.toBinaryString(1)));
+                    }
 
                     testHeader.setTTLIVE( binaryToArray(Integer.toBinaryString(ttl)) ); //........................................ add new TTL to header
                     dataField = totalLength - headerLength;

@@ -169,9 +169,13 @@ public class Header {
         data.put( TTLIVE, ttlive );
     }
 
+    // Method to set the header length
     public void setHeaderLength( int[] headerLength ){
         data.put( HEADER_LENGTH, headerLength );
     }
+
+    // Method to set the flag bit
+    public void setFlag( int[] flag ){ data.put( FLAG, flag ); }
 
     // Method to return a formatted String representing all data
     // Overridden
