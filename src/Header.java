@@ -150,11 +150,18 @@ public class Header {
     // NEEDS TO BE UPDATED TO RETURN A DEEP COPY
     public Map< String, int[] > getData(){ return data; }
 
+    // Method to get the destination address
     public String getDestAddress(){ return binaryIPConvert(data.get(DEST_ADDRESS)); }
 
+    // Method to get the source address
     public String getSourceAddress(){ return binaryIPConvert(data.get(SOURCE_ADDRESS)); }
 
+    // Method to get the total bytes of packet
     public int getTotalBytes() { return totalBytes; }
+
+    public void setTotalLength( int[] totalLength) {
+        data.put( TOTAL_LENGTH, totalLength );
+    }
 
     // Method to return a formatted String representing all data
     // Overridden
@@ -174,7 +181,7 @@ public class Header {
     }
 
     // Method to convert an array of binary data representing the IP address into a String
-    private String binaryIPConvert( int[] ipAddress ){
+    public String binaryIPConvert( int[] ipAddress ){
         String returnString = ""; //............................................... variable to return
 
         for( int sections = 0; sections < 4; sections++ ){ //...................... loop through 4 sections for address
