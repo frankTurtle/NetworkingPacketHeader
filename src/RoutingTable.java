@@ -73,12 +73,11 @@ public class RoutingTable {
     // returns the arraylist of hash tables
     public ArrayList< HashMap<String, int[]> > getTableRows(){ return tableRows; }
 
+    // Method to determine if the IP passed in is part of the list
     public boolean ipExistInTable( String ipAddress ){
-        String convertedIP = createIPString(createIPArray(addMaskToAddress(ipAddress, MASK)));
+        String convertedIP = createIPString(createIPArray(addMaskToAddress(ipAddress, MASK))); //. converts the IP with the MASK
 
-        System.out.println(convertedIP);
-
-        for( HashMap<String, int[]> entry : getTableRows() ) {
+        for( HashMap<String, int[]> entry : getTableRows() ) { //................................. checks each entry
             if (createIPString(entry.get(ORIGIN)).equals(convertedIP) ||
                     createIPString(entry.get(DESTINATION)).equals(convertedIP)) return true;
         }
@@ -86,43 +85,51 @@ public class RoutingTable {
         return false;
     }
 
+    // Method to add the Network Mask to the address
+    // reveals it's magical locations!
     private String addMaskToAddress( String address, String mask ){
-        String[] binary = address.split( "\\." );
-        String updatedAddress = "";
+        String[] binary = address.split( "\\." ); //............................... split the address up into strings
+        String updatedAddress = ""; //............................................. variables to hold the addresss
         String addressPart;
 
-        for( int index = 0; index < binary.length; index++ ){
-            addressPart = Integer.toBinaryString( Integer.parseInt(binary[index]));
-            while( (addressPart.length() % 8) != 0 ){ addressPart = String.format( "0%s", addressPart ); }
-            updatedAddress += addressPart;
+        for( int index = 0; index < binary.length; index++ ){ //................... loop through each IP segment
+            addressPart =
+                    Integer.toBinaryString( Integer.parseInt(binary[index])); //... get the binary converstion
+            while( (addressPart.length() % 8) != 0 ){ //........................... if its not 8 chars, add the leading 0's
+                addressPart = String.format( "0%s", addressPart );
+            }
+            updatedAddress += addressPart; //...................................... add onto updated address
 
         }
 
-        long updatedNum = Long.parseLong( updatedAddress,2 );
+        long updatedNum = Long.parseLong( updatedAddress,2 ); //................... get the value of the binary nums
         long maskNum = Long.parseLong( MASK,2 );
-        updatedNum = updatedNum & maskNum;
-        updatedAddress = Long.toBinaryString( updatedNum );
+        updatedNum = updatedNum & maskNum; //...................................... and them together with the mask
+        updatedAddress = Long.toBinaryString( updatedNum ); //..................... output the binary string
 
 //        0110 1110  0010 0000  0010 0000  0101 0000
 
         return updatedAddress;
     }
 
+    // Method to create a string in the IP address format from the array passed in
     private String createIPString( int[] arrayToConvert ){
-        String returnString = "";
+        String returnString = ""; //...................................... create a string to return
+        for( int ip : arrayToConvert ){ returnString += ip + "."; } //.... add a . between each number to return
 
-        for( int ip : arrayToConvert ){ returnString += ip + "."; }
-
-        return returnString.substring( 0, returnString.length() - 1 );
+        return returnString.substring( 0, returnString.length() - 1 ); //. cut off the last . at the end
     }
 
+    // Method to create an array with the IP addresses based off the string passed in
     private int[] createIPArray( String stringToConvert ){
-        int[] returnString = new int[4];
-        while( (stringToConvert.length() % 8) != 0 ){ stringToConvert = String.format( "0%s", stringToConvert); }
+        int[] returnString = new int[4]; //............................. create an array to return
+        while( (stringToConvert.length() % 8) != 0 ){  //............... if it doesnt equal 8 chars add leading 0's
+            stringToConvert = String.format( "0%s", stringToConvert);
+        }
 
-        for( int i = 0; i < returnString.length; i++ ){
-            String temp = stringToConvert.substring(i*8, i*8+8);
-            returnString[ i ] = Integer.parseInt(temp, 2);
+        for( int i = 0; i < returnString.length; i++ ){ //.............. loop through the string
+            String temp = stringToConvert.substring(i*8, i*8+8); //..... get a substring of each ip section
+            returnString[ i ] = Integer.parseInt(temp, 2); //........... convert it to an int and put into the return array
         }
 
         return returnString;

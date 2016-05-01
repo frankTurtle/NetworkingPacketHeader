@@ -62,38 +62,42 @@ public class App {
 //        System.out.println( Integer.parseInt(Integer.toBinaryString(110), 2) );
     }
 
+    // Method to test if the IP is valid for the network
     private static boolean testIpAddress( String ipAddress ){
         return new RoutingTable().ipExistInTable( ipAddress );
     }
 
+    // Method to write the array list input to a file
     private static void writeToFile( ArrayList<String> input ){
-        List< String > lines = input;
-        Path file = Paths.get( "output.txt" );
+        List< String > lines = input; //.............................. makes input a list
+        Path file = Paths.get( "output.txt" ); //..................... create a path to the file
         try{
-            Files.write( file, lines, Charset.forName("UTF-8") );
+            Files.write( file, lines, Charset.forName("UTF-8") ); //.. write all lines to the file
         }
         catch( IOException e ){
             System.out.println( "error" + e.toString() );
         }
     }
 
+    // Method to be called in the beginning
+    // does basic packet checking to make sure it's able to be transmitted
     private static boolean ableToTransmit( Header testHeader, Options testOptions, ArrayList< String > output ){
         if( !(testIpAddress(testHeader.getDestAddress()) &&
-                testIpAddress(testHeader.getSourceAddress())) ){ //................. if there's an error in either address
-            String outputString = ( testIpAddress(testHeader.getDestAddress()) )
+                testIpAddress(testHeader.getSourceAddress())) ){ //..................................................... if there's an error in either address
+            String outputString = ( testIpAddress(testHeader.getDestAddress()) ) //..................................... determine source or dest error
                     ? "Source"
                     : "Destination";
 
-            output.add( String.format("Unknown %s: %s", outputString, testHeader.getDestAddress()) );
-            writeToFile( output ); //.................................................................. write error log
+            output.add( String.format("Unknown %s: %s", outputString, testHeader.getDestAddress()) ); //................ built error string
+            writeToFile( output ); //................................................................................... write error log
             System.out.println( "Error, check log" );
             System.exit(0);
         }
-        else { //.. Check to make sure option number is legit
-            int optionNumber = Integer.parseInt( Header.binaryToDecimal( testOptions.getData().get(OPTION_NUMBER)) );
-            if( optionNumber != 9 && optionNumber != 7 && optionNumber != 0 ){
-                output.add( String.format("Option Number Error: %d", optionNumber) );
-                writeToFile( output ); //...................................................... write error log
+        else { //....................................................................................................... Check to make sure option number is legit
+            int optionNumber = Integer.parseInt( Header.binaryToDecimal( testOptions.getData().get(OPTION_NUMBER)) );//. get number
+            if( optionNumber != 9 && optionNumber != 7 && optionNumber != 0 ){ //....................................... if its a not a 0,7,9 its not legit
+                output.add( String.format("Option Number Error: %d", optionNumber) ); //................................ build error string
+                writeToFile( output ); //............................................................................... write error log
                 System.out.println( "Error, check log" );
                 System.exit(0);
             }

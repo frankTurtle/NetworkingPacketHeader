@@ -78,7 +78,7 @@ public class Header {
                     row++; //....................................................................... once the line is finished go to the next one
                 }
 
-                if( line.length() != 32 ){ totalBytes = Integer.parseInt( line ); }
+                if( line.length() != 32 ){ totalBytes = Integer.parseInt( line ); } //.............. if its the end of the file get the bytes length
 
                 bufferedReader.close(); //.......................................................... close the file connection
             }

@@ -35,7 +35,7 @@ public class Options {
             }
         }
 
-        recordRoute = new ArrayList<>();
+        recordRoute = new ArrayList<>(); //............ initialize all array lists and total bytes
         sourceRoute = new ArrayList<>();
         totalBytes = 0;
     }
@@ -45,64 +45,64 @@ public class Options {
     // string can be the actual raw data or a file name
     // boolean value determines if its a file name or raw data and acts  accordingly
     public Options( String input, boolean isFilename ){
-        this(); //.................................................................................. initializes data array
+        this(); //.................................................................................... initializes data array
 
-        if( isFilename ){ //........................................................................ if its a filename and not raw data
-            String line = null; //.................................................................. variable to capture the line from the file
-            int row = 0; //......................................................................... keeps track of which row its on
+        if( isFilename ){ //.......................................................................... if its a filename and not raw data
+            String line = null; //.................................................................... variable to capture the line from the file
+            int row = 0; //........................................................................... keeps track of which row its on
             int header = 5;
 
             try {
-                FileReader fileReader = new FileReader( input + ".txt" ); //........................ open up the file
-                BufferedReader bufferedReader = new BufferedReader( fileReader ); //................ pass it along to buffered reader in the event of overflow
+                FileReader fileReader = new FileReader( input + ".txt" ); //.......................... open up the file
+                BufferedReader bufferedReader = new BufferedReader( fileReader ); //.................. pass it along to buffered reader in the event of overflow
 
-                while( row < 1 && (line = bufferedReader.readLine()) != null ){ //.................. while there are lines left to read
-                    if( header > 0 ){ header--; continue; } //...................................... ignores all the header lines in the packet
+                while( row < 1 && (line = bufferedReader.readLine()) != null ){ //.................... while there are lines left to read
+                    if( header > 0 ){ header--; continue; } //........................................ ignores all the header lines in the packet
                     else {
-                        if( line.length() != 32 ){ totalBytes = Integer.parseInt( line ); break;}
-                        for (int index = 0; index < PACKET_ORDER[row].length; index++) { //............. loop through each array in the packet labels
-                            String key = PACKET_ORDER[row][index]; //................................... get the key
+                        if( line.length() != 32 ){ totalBytes = Integer.parseInt( line ); break;} //.. capture total bytes if its not a full length
+                        for (int index = 0; index < PACKET_ORDER[row].length; index++) { //........... loop through each array in the packet labels
+                            String key = PACKET_ORDER[row][index]; //................................. get the key
                             int length = NUM_OF_BITS.get(key); //..................................... determine length of the array with the key
                             int[] dataArray = data.get(key); //....................................... pointer to that array so we can manipulate
 
                             for (int bitIndex = 0; bitIndex < length; bitIndex++) { //.................. loop through each value in the array from the key
-                                if (line.charAt(bitIndex) != '0') {
-                                    dataArray[bitIndex]++;
-                                } //....... if it's not a 0 increment the value in the current array to a 1
+                                if (line.charAt(bitIndex) != '0') { dataArray[bitIndex]++; } //........ if it's not a 0 increment the value in the current array to a 1
                             }
 
-                            line = line.substring(length); //......................................... cut the data we just processed out of the line
+                            line = line.substring(length); //.......................................... cut the data we just processed out of the line
                         }
                     }
 
-                    row++; //....................................................................... once the line is finished go to the next one
+                    row++; //......................................................................... once the line is finished go to the next one
                 }
 
-                int optionChosen = Integer.parseInt(Header.binaryToDecimal(data.get(OPTION_NUMBER)));
+                int optionChosen =
+                        Integer.parseInt(Header.binaryToDecimal(data.get(OPTION_NUMBER))); //......... get the option from the packet
 
-                if( optionChosen == 7 || optionChosen == 9 ){
-                    int ipAddresses = (Integer.parseInt(Header.binaryToDecimal(data.get(LENGTH))) - 3) / 4;
-                    while( (line = bufferedReader.readLine()) != null && ipAddresses > 0 ){
-                        int[] dataArray = new int[32];
+                if( optionChosen == 7 || optionChosen == 9 ){ //...................................... if the option is ones we care about
+                    int ipAddresses =
+                            (Integer.parseInt(Header.binaryToDecimal(data.get(LENGTH))) - 3) / 4; //.. get the number of addresses
+                    while( (line = bufferedReader.readLine()) != null && ipAddresses > 0 ){ //........ while there's lines
+                        int[] dataArray = new int[32]; //............................................. create a new array to hold the ipAddress
 
-                        for( int index = 0; index < dataArray.length; index++ ){
+                        for( int index = 0; index < dataArray.length; index++ ){ //................... get the full line
                             if( line.charAt(index) != '0' ){ dataArray[ index ]++; }
                         }
 
-                        if( optionChosen == 7 ) recordRoute.add( dataArray );
-                        else sourceRoute.add( dataArray );
-                        ipAddresses--;
-                    };
-                    if( line.length() != 32 ){ totalBytes = Integer.parseInt( line ); }
+                        if( optionChosen == 7 ) recordRoute.add( dataArray ); //...................... if it's a record, put in record list
+                        else sourceRoute.add( dataArray ); //......................................... if its a sourceRoute, put in that list
+                        ipAddresses--; //............................................................. decrement the list of IP addresses
+                    }
+                    if( line.length() != 32 ){ totalBytes = Integer.parseInt( line ); } //............ if the line is the bytetotal get it
                 }
 
-                bufferedReader.close(); //.......................................................... close the file connection
+                bufferedReader.close(); //............................................................ close the file connection
             }
-            catch( FileNotFoundException ex ){ //................................................... if the file doesnt exist
+            catch( FileNotFoundException ex ){ //..................................................... if the file doesnt exist
                 System.out.println( "Unable to open file '" + input + "'" );
                 ex.printStackTrace();
             }
-            catch( IOException ex ){ //............................................................. if were unable to read the file
+            catch( IOException ex ){ //............................................................... if were unable to read the file
                 System.out.println( "Error reading file '" + input + "'" );
             }
         }
