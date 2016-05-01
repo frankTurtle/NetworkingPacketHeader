@@ -169,6 +169,10 @@ public class Header {
         data.put( TTLIVE, ttlive );
     }
 
+    public void setHeaderLength( int[] headerLength ){
+        data.put( HEADER_LENGTH, headerLength );
+    }
+
     // Method to return a formatted String representing all data
     // Overridden
     public String toString(){
