@@ -27,8 +27,14 @@ public class App {
 
         if( ableToTransmit(testHeader, testOptions, output) ){
             System.out.println( "lets begin" );
-            System.out.println( routingTable.getMtu(testHeader.getDestAddress()) );
-            System.out.println(testOptions.getTotalBytes());
+            int mtu = routingTable.getMtu(testHeader.getDestAddress());
+            int packetSize = ( testHeader.getTotalBytes() > 0 )
+                    ? testHeader.getTotalBytes()
+                    : testOptions.getTotalBytes();
+
+            if( fragmentPacket(mtu, packetSize) ){
+                System.out.println( "Fragment" );
+            }
         }
 
 //        System.out.println( testIpAddress(testHeader.getSourceAddress()) );
@@ -66,6 +72,11 @@ public class App {
     // Method to test if the IP is valid for the network
     private static boolean testIpAddress( String ipAddress ){
         return new RoutingTable().ipExistInTable( ipAddress );
+    }
+
+    // Helper method to test packet size vs MTU
+    private static boolean fragmentPacket( int mtu, int packetSize ){
+        return packetSize > mtu;
     }
 
     // Method to write the array list input to a file
