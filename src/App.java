@@ -52,6 +52,13 @@ public class App {
                 int fragOffset = 0;
 
                 for( int send = 0; send < totalPackets; send++ ){
+                    if( send > 0 ){
+                        testHeader.setHeaderLength( binaryToArray(Integer.toBinaryString(5)));
+                        testHeader.setFragOffset( binaryToArray(Integer.toBinaryString(fragOffset)));
+                        if( send + 1 == totalPackets )
+                            testHeader.setFlag( binaryToArray(Integer.toBinaryString(0)));
+                    } //.................. if its not the first fragment, adjust header length
+
                     int totalLength = mtu;
                     int headerLength = Integer.parseInt(Header.binaryToDecimal(testHeader.getData().get(HEADER_LENGTH)) ) * 4;
                     int remainder = ((mtu - headerLength) % 8 );
@@ -61,13 +68,7 @@ public class App {
                         testHeader.setTotalLength( binaryToArray(Integer.toBinaryString(totalLength)));
                     }
 
-                    if( send > 0 ){
-                        testHeader.setHeaderLength( binaryToArray(Integer.toBinaryString(5)));
-                        testHeader.setFragOffset( binaryToArray(Integer.toBinaryString(fragOffset)));
-                        if( send + 1 == totalPackets )
-                            testHeader.setFlag( binaryToArray(Integer.toBinaryString(0)));
-                    } //.................. if its not the first fragment, adjust header length
-                    else{
+                    if( send == 0 ){
                         testHeader.setFlag( binaryToArray(Integer.toBinaryString(1)));
                         fragOffset = (totalLength - headerLength) / 8;
                     }
