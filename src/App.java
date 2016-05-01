@@ -49,6 +49,7 @@ public class App {
                 int totalPackets = (int)((double)packetSize / mtu + .5); //.. gets the total number of packets we'll have to send
                 int ttl = Integer.parseInt(Header.binaryToDecimal(testHeader.getData().get(TTLIVE)) ) - 1; //................ update the TTL
                 int dataField;
+                int fragOffset = 0;
 
                 for( int send = 0; send < totalPackets; send++ ){
                     int totalLength = mtu;
@@ -62,11 +63,13 @@ public class App {
 
                     if( send > 0 ){
                         testHeader.setHeaderLength( binaryToArray(Integer.toBinaryString(5)));
+                        testHeader.setFragOffset( binaryToArray(Integer.toBinaryString(fragOffset)));
                         if( send + 1 == totalPackets )
                             testHeader.setFlag( binaryToArray(Integer.toBinaryString(0)));
                     } //.................. if its not the first fragment, adjust header length
                     else{
                         testHeader.setFlag( binaryToArray(Integer.toBinaryString(1)));
+                        fragOffset = (totalLength - headerLength) / 8;
                     }
 
                     testHeader.setTTLIVE( binaryToArray(Integer.toBinaryString(ttl)) ); //........................................ add new TTL to header

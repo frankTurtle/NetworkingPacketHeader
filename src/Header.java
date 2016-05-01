@@ -177,6 +177,9 @@ public class Header {
     // Method to set the flag bit
     public void setFlag( int[] flag ){ data.put( FLAG, flag ); }
 
+    // Method to set the fragmentation offset
+    public void setFragOffset( int[] fragOffset ){ data.put( FRAG_OFFSET, fragOffset ); }
+
     // Method to return a formatted String representing all data
     // Overridden
     public String toString(){
