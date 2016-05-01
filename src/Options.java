@@ -58,8 +58,8 @@ public class Options {
 
                 while( row < 1 && (line = bufferedReader.readLine()) != null ){ //.................. while there are lines left to read
                     if( header > 0 ){ header--; continue; } //...................................... ignores all the header lines in the packet
-                    if( line.length() != 32 ){ totalBytes = Integer.parseInt( line ); }
                     else {
+                        if( line.length() != 32 ){ totalBytes = Integer.parseInt( line ); break;}
                         for (int index = 0; index < PACKET_ORDER[row].length; index++) { //............. loop through each array in the packet labels
                             String key = PACKET_ORDER[row][index]; //................................... get the key
                             int length = NUM_OF_BITS.get(key); //..................................... determine length of the array with the key
@@ -92,7 +92,8 @@ public class Options {
                         if( optionChosen == 7 ) recordRoute.add( dataArray );
                         else sourceRoute.add( dataArray );
                         ipAddresses--;
-                    }
+                    };
+                    if( line.length() != 32 ){ totalBytes = Integer.parseInt( line ); }
                 }
 
                 bufferedReader.close(); //.......................................................... close the file connection
@@ -146,4 +147,5 @@ public class Options {
     public ArrayList< int[] > getRecordRoute(){ return recordRoute; }
     public ArrayList< int[] > getSourceRoute(){ return sourceRoute; }
     public int getTotalBytes(){ return totalBytes; }
+    public Map<String, int[]> getData() { return data; }
 }

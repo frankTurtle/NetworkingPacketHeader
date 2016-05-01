@@ -29,6 +29,7 @@ public class Header {
     private static final String[][] PACKET_ORDER = createPacketOrder(); //...... variable to have the order of packets align with design
 
     private Map< String, int[] > data; //....................................... variable to contain the data passed in
+    private int totalBytes;
 
     // Default Constructor
     // initializes data with array's full of 0s
@@ -42,6 +43,8 @@ public class Header {
                 data.put( key, bitArray ); //.......... put into data HashMap!
             }
         }
+
+        totalBytes = 0;
     }
 
     // Constructor with parameters
@@ -74,6 +77,8 @@ public class Header {
 
                     row++; //....................................................................... once the line is finished go to the next one
                 }
+
+                if( line.length() != 32 ){ totalBytes = Integer.parseInt( line ); }
 
                 bufferedReader.close(); //.......................................................... close the file connection
             }
@@ -148,6 +153,8 @@ public class Header {
     public String getDestAddress(){ return binaryIPConvert(data.get(DEST_ADDRESS)); }
 
     public String getSourceAddress(){ return binaryIPConvert(data.get(SOURCE_ADDRESS)); }
+
+    public int getTotalBytes() { return totalBytes; }
 
     // Method to return a formatted String representing all data
     // Overridden
