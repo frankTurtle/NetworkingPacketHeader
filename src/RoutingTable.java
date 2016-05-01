@@ -75,10 +75,8 @@ public class RoutingTable {
 
     public boolean ipExistInTable( String ipAddress ){
         String convertedIP = createIPString(createIPArray(addMaskToAddress(ipAddress, MASK)));
-        String convertedOrigin = "";
-        String convertedDestination = "";
 
-        System.out.println( createIPString(createIPArray(addMaskToAddress(ipAddress, MASK))) );
+        System.out.println(convertedIP);
 
         for( HashMap<String, int[]> entry : getTableRows() ) {
             if (createIPString(entry.get(ORIGIN)).equals(convertedIP) ||
@@ -95,7 +93,6 @@ public class RoutingTable {
 
         for( int index = 0; index < binary.length; index++ ){
             addressPart = Integer.toBinaryString( Integer.parseInt(binary[index]));
-//            String maskPart = mask.substring(index*8, index*8+8);
             while( (addressPart.length() % 8) != 0 ){ addressPart = String.format( "0%s", addressPart ); }
             updatedAddress += addressPart;
 

@@ -20,9 +20,23 @@ public class App {
     private static RoutingTable routingTable = new RoutingTable();
 
     public static void main( String[] args ){
-        Header test = new Header( "test", true );
+        Header testHeader = new Header( "test", true );
+        Options testOptions = new Options( "test", true );
         ArrayList< String > output = new ArrayList<>();
-        System.out.println( test );
+
+//        System.out.println( testIpAddress(testHeader.getSourceAddress()) );
+
+        if( !(testIpAddress(testHeader.getDestAddress()) &&
+            testIpAddress(testHeader.getSourceAddress())) ){
+            String outputString = ( testIpAddress(testHeader.getDestAddress()) )
+                    ? "Source"
+                    : "Destination";
+
+            output.add( String.format("Unknown %s: %s", outputString, testHeader.getDestAddress()) );
+            writeToFile( output );
+            System.out.println( "Error, check log" );
+            System.exit(0);
+        }
 
 //        for( int row = 0; row < routingTable.getTableRows().size(); row++ ){
 //            System.out.println( row+1 + ": "  + Arrays.toString( routingTable.getTableRows().get(row).get(DESTINATION)) );
@@ -31,23 +45,23 @@ public class App {
 //        Options testOptions = new Options( "test", true );
 //        Options test2Options = new Options( "test2", true );
 //        Options test3Options = new Options( "test3", true );
-        Options test4Options = new Options( "testEmpty", true );
+//        Options test4Options = new Options( "testEmpty", true );
 
-        System.out.println( test4Options );
+//        System.out.println( test4Options );
 
 //        for( int[] num : test2Options.getRecordRoute() ){
 //            System.out.println(Arrays.toString(num));
 //        }
 
-        for( int[] num : test4Options.getSourceRoute() ){
-            System.out.println(Arrays.toString(num));
-        }
+//        for( int[] num : test4Options.getSourceRoute() ){
+//            System.out.println(Arrays.toString(num));
+//        }
 
 
 //        System.out.println( testIpAddress( test.getSourceAddress()) );
 
-        output.add( "Success" );
-        output.add( "hooray" );
+//        output.add( "Success" );
+//        output.add( "hooray" );
 
 //        writeToFile( output );
 

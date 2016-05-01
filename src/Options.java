@@ -61,7 +61,6 @@ public class Options {
                     if( line.length() != 32 ){ totalBytes = Integer.parseInt( line ); }
                     else {
                         for (int index = 0; index < PACKET_ORDER[row].length; index++) { //............. loop through each array in the packet labels
-                            System.out.println(line);
                             String key = PACKET_ORDER[row][index]; //................................... get the key
                             int length = NUM_OF_BITS.get(key); //..................................... determine length of the array with the key
                             int[] dataArray = data.get(key); //....................................... pointer to that array so we can manipulate
