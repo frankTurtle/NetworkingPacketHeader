@@ -27,6 +27,7 @@ public class App {
 
         if( ableToTransmit(testHeader, testOptions, output) ){
             System.out.println( "lets begin" );
+            System.out.println( routingTable.getMtu(testHeader.getDestAddress()) );
             System.out.println(testOptions.getTotalBytes());
         }
 

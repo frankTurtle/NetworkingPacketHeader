@@ -73,12 +73,30 @@ public class RoutingTable {
     // returns the arraylist of hash tables
     public ArrayList< HashMap<String, int[]> > getTableRows(){ return tableRows; }
 
+    // Method to get the MTU from the IP Address
+    // checks to see if the IP is valid first and if so, returns the MTU
+    public int getMtu( String ipAddress ){
+        int returnMTU = 0;
+        String convertedIP = createIPString(createIPArray(addMaskToAddress(ipAddress, MASK))); //. converts the IP with the MASK
+
+        if( ipExistInTable(ipAddress) ){ //....................................................... if its a valid IP
+            for( HashMap<String, int[]> entry : tableRows ){ //................................... loop over the entries
+                if( createIPString(entry.get(ORIGIN)).equals(convertedIP) ){ //................... once found
+                    return entry.get(MTU)[0]; //.................................................. return the MTU value
+                }
+
+            }
+        }
+
+        return returnMTU;
+    }
+
     // Method to determine if the IP passed in is part of the list
     public boolean ipExistInTable( String ipAddress ){
         String convertedIP = createIPString(createIPArray(addMaskToAddress(ipAddress, MASK))); //. converts the IP with the MASK
 
         for( HashMap<String, int[]> entry : getTableRows() ) { //................................. checks each entry
-            if (createIPString(entry.get(ORIGIN)).equals(convertedIP) ||
+            if( createIPString(entry.get(ORIGIN)).equals(convertedIP) ||
                     createIPString(entry.get(DESTINATION)).equals(convertedIP)) return true;
         }
 
