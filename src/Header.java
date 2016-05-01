@@ -147,6 +147,8 @@ public class Header {
 
     public String getDestAddress(){ return binaryIPConvert(data.get(DEST_ADDRESS)); }
 
+    public String getSourceAddress(){ return binaryIPConvert(data.get(SOURCE_ADDRESS)); }
+
     // Method to return a formatted String representing all data
     // Overridden
     public String toString(){

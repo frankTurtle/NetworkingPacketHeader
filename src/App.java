@@ -24,7 +24,7 @@ public class App {
         System.out.println( testOptions );
 
 
-        System.out.println( testIpAddress( test.getDestAddress()) );
+        System.out.println( testIpAddress( test.getSourceAddress()) );
 
 //        System.out.println( Integer.parseInt(Integer.toBinaryString(110), 2) );
     }
