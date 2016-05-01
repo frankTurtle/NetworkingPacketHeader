@@ -58,7 +58,7 @@ public class Options {
                         int[] dataArray = data.get( key ); //....................................... pointer to that array so we can manipulate
 
                         for( int bitIndex = 0; bitIndex < length; bitIndex++ ){ //.................. loop through each value in the array from the key
-                            if( line.charAt(bitIndex) != '0' ){ dataArray[ bitIndex ]++; } //...... if it's not a 0 increment the value in the current array to a 1
+                            if( line.charAt(bitIndex) != '0' ){ dataArray[ bitIndex ]++; } //....... if it's not a 0 increment the value in the current array to a 1
                         }
 
                         line = line.substring( length ); //......................................... cut the data we just processed out of the line
