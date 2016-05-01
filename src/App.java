@@ -8,7 +8,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class App {
@@ -33,91 +32,85 @@ public class App {
     private static RoutingTable routingTable = new RoutingTable();
 
     public static void main( String[] args ){
-        Header testHeader = new Header( "test", true );
-        Options testOptions = new Options( "test", true );
+        Header testHeader = new Header( "testEmpty", true );
+        Options testOptions = new Options( "testEmpty", true );
         ArrayList< String > output = new ArrayList<>();
 
         if( ableToTransmit(testHeader, testOptions, output) ){
-            System.out.println( "Lets begin" );
             int mtu = routingTable.getMtu(testHeader.getDestAddress());
             int packetSize = ( testHeader.getTotalBytes() > 0 )
                     ? testHeader.getTotalBytes()
                     : testOptions.getTotalBytes();
 
-            if( fragmentPacket(mtu, packetSize) ){
-                System.out.println( "Fragment" );
-                int totalPackets = (int)((double)packetSize / mtu + .5); //.. gets the total number of packets we'll have to send
-                int ttl = Integer.parseInt(Header.binaryToDecimal(testHeader.getData().get(TTLIVE)) ) - 1; //................ update the TTL
-                int dataField;
-                int fragOffset = 0;
-
-                for( int send = 0; send < totalPackets; send++ ){
-                    if( send > 0 ){
-                        testHeader.setHeaderLength( binaryToArray(Integer.toBinaryString(5)));
-                        testHeader.setFragOffset( binaryToArray(Integer.toBinaryString(fragOffset)));
-                        if( send + 1 == totalPackets )
-                            testHeader.setFlag( binaryToArray(Integer.toBinaryString(0)));
-                    } //.................. if its not the first fragment, adjust header length
-
-                    int totalLength = mtu;
-                    int headerLength = Integer.parseInt(Header.binaryToDecimal(testHeader.getData().get(HEADER_LENGTH)) ) * 4;
-                    int remainder = ((mtu - headerLength) % 8 );
-
-                    if( remainder > 0 ){
-                        totalLength -= remainder;
-                        testHeader.setTotalLength( binaryToArray(Integer.toBinaryString(totalLength)));
-                    }
-
-                    if( send == 0 ){
-                        testHeader.setFlag( binaryToArray(Integer.toBinaryString(1)));
-                        fragOffset = (totalLength - headerLength) / 8;
-                    }
-
-                    testHeader.setTTLIVE( binaryToArray(Integer.toBinaryString(ttl)) ); //........................................ add new TTL to header
-                    dataField = totalLength - headerLength;
-
-                    output.add( testHeader.toString() + String.format( "%21s: %s%n", "Data Field", dataField) );
-                }
-
+            if( fragmentPacket(mtu, packetSize) ){ //........................................ if the packet needs to be fragmented
+                System.out.println( "File is fragmented, check log." );
+                processFragmentation( packetSize, mtu, testHeader, testOptions, output ); //. fragment it!
             }
         }
-
-//        System.out.println( testIpAddress(testHeader.getSourceAddress()) );
-
-//        for( int row = 0; row < routingTable.getTableRows().size(); row++ ){
-//            System.out.println( row+1 + ": "  + Arrays.toString( routingTable.getTableRows().get(row).get(DESTINATION)) );
-//        }
-
-//        Options testOptions = new Options( "test", true );
-//        Options test2Options = new Options( "test2", true );
-//        Options test3Options = new Options( "test3", true );
-//        Options test4Options = new Options( "testEmpty", true );
-
-//        System.out.println( test4Options );
-
-//        for( int[] num : test2Options.getRecordRoute() ){
-//            System.out.println(Arrays.toString(num));
-//        }
-
-//        for( int[] num : test4Options.getSourceRoute() ){
-//            System.out.println(Arrays.toString(num));
-//        }
-
-
-//        System.out.println( testIpAddress( test.getSourceAddress()) );
-
-//        output.add( "Success" );
-//        output.add( "hooray" );
-
-//        writeToFile( output );
-
-//        System.out.println( Integer.parseInt(Integer.toBinaryString(110), 2) );
-        writeToFile( output, "output" );
+        writeToFile( output, "output" ); //.................................................. write results to file
     }
+
+    // Method to help with output string
+    private static String outputStringHelper( Header testHeader, Options testOptions ){
+        return String.format( "%s%n%s%s", getLine(),testHeader.toString(), testOptions.toString() );
+    }
+
+    // Method to return a line
+    private static String getLine(){ return " --------------------"; }
 
     // Method to test if the IP is valid for the network
     private static boolean testIpAddress( String ipAddress ){
         return new RoutingTable().ipExistInTable( ipAddress );
+    }
+
+    // Helper method to fragment packets n jazz
+    private static void processFragmentation( int packetSize, int mtu, Header testHeader,
+                                              Options testOptions, ArrayList<String> output ){
+        int totalPackets = (int)Math.ceil( packetSize / mtu + 1.5 ); //.......................................... gets the total number of packets we'll have to send
+        int ttl = Integer.parseInt(Header.binaryToDecimal(testHeader.getData().get(TTLIVE)) ) - 1; //............ update the TTL
+        int dataField; //........................................................................................ instance variables
+        int fragOffset = 0;
+        int dataLeft = packetSize;
+
+        for( int send = 0; send < totalPackets; send++ ){ //..................................................... loop through each packet
+            if( send > 0 ){ //................................................................................... if its not the first packet
+                testHeader.setHeaderLength( binaryToArray(Integer.toBinaryString(5))); //........................ set the length to 5
+                testHeader.setFragOffset( binaryToArray(Integer.toBinaryString(fragOffset))); //................. set the fragment offsets
+                fragOffset += fragOffset; //..................................................................... update offsets to new value for next round
+                if( send + 1 == totalPackets ) //................................................................ if this is the last packet
+                    testHeader.setFlag( binaryToArray(Integer.toBinaryString(0))); //............................ set the flag to indicate its the last
+            }
+
+            int totalLength = mtu; //............................................................................ get total length of this network
+            int headerLength =
+                    Integer.parseInt(Header.binaryToDecimal(testHeader.getData().get(HEADER_LENGTH)) ) * 4; //... get the header length
+            int remainder = ((mtu - headerLength) % 8 ); //...................................................... if there's anything left over after mod 8
+
+            if( totalLength > (dataLeft + headerLength) ){ //.................................................... if the length is more than dataLeft + header
+                totalLength = dataLeft + headerLength; //........................................................ it means it still needs to be split up
+                testHeader.setTotalLength( binaryToArray(Integer.toBinaryString(totalLength))); //............... set the new total length
+            }
+            else if( remainder > 0 ){ //......................................................................... check if theres a remainder
+                totalLength -= remainder; //..................................................................... subtract from total length to make / by 8
+                testHeader.setTotalLength( binaryToArray(Integer.toBinaryString(totalLength))); //............... set the new total length
+            }
+
+            if( send == 0 ){ //.................................................................................. if its the first packet
+                testHeader.setFlag( binaryToArray(Integer.toBinaryString(1))); //................................ set flag to 1
+                fragOffset = (totalLength - headerLength) / 8; //................................................ calculate the offset
+            }
+
+            testHeader.setTTLIVE( binaryToArray(Integer.toBinaryString(ttl)) ); //............................... add new TTL to header
+            dataField = totalLength - headerLength; //........................................................... update values
+            dataLeft -= dataField;
+
+            String outputString = ( send == 0 ) //............................................................... if its the end
+                    ? "Fragment " + (send + 1) + outputStringHelper(testHeader, testOptions)  //................. special format output
+                        + String.format( "%21s: %s%n", "Data Field", dataField )
+                    : "Fragment " + (send + 1) + getLine() + "\n" + testHeader.toString() //..................... normal format output
+                        + String.format( "%21s: %s%n", "Data Field", dataField);
+            if( !(dataField <= 0) )output.add( outputString ); //................................................ add to output to be printed
+        }
     }
 
     // Helper method to test packet size vs MTU
