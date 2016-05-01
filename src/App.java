@@ -30,15 +30,16 @@ public class App {
 
 //        Options testOptions = new Options( "test", true );
 //        Options test2Options = new Options( "test2", true );
-        Options test3Options = new Options( "test3", true );
+//        Options test3Options = new Options( "test3", true );
+        Options test4Options = new Options( "testEmpty", true );
 
-        System.out.println( test3Options );
+        System.out.println( test4Options );
 
 //        for( int[] num : test2Options.getRecordRoute() ){
 //            System.out.println(Arrays.toString(num));
 //        }
 
-        for( int[] num : test3Options.getSourceRoute() ){
+        for( int[] num : test4Options.getSourceRoute() ){
             System.out.println(Arrays.toString(num));
         }
 

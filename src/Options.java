@@ -22,6 +22,7 @@ public class Options {
     private Map< String, int[] > data; //....................................... variable to contain the data passed in
     private ArrayList< int[] > recordRoute; //.................................. variable for all the recordRoute IP Addresses
     private ArrayList< int[] > sourceRoute; //.................................. variable for all the sourceRoute IP addresses
+    private int totalBytes;
 
     public Options(){
         data = new HashMap<>(); //..................... instantiate data variable
@@ -36,6 +37,7 @@ public class Options {
 
         recordRoute = new ArrayList<>();
         sourceRoute = new ArrayList<>();
+        totalBytes = 0;
     }
 
     // Constructor with parameters
@@ -56,16 +58,22 @@ public class Options {
 
                 while( row < 1 && (line = bufferedReader.readLine()) != null ){ //.................. while there are lines left to read
                     if( header > 0 ){ header--; continue; } //...................................... ignores all the header lines in the packet
-                    for( int index = 0; index < PACKET_ORDER[row].length; index++ ){ //............. loop through each array in the packet labels
-                        String key = PACKET_ORDER[row][index]; //................................... get the key
-                        int length = NUM_OF_BITS.get( key ); //..................................... determine length of the array with the key
-                        int[] dataArray = data.get( key ); //....................................... pointer to that array so we can manipulate
+                    if( line.length() != 32 ){ totalBytes = Integer.parseInt( line ); }
+                    else {
+                        for (int index = 0; index < PACKET_ORDER[row].length; index++) { //............. loop through each array in the packet labels
+                            System.out.println(line);
+                            String key = PACKET_ORDER[row][index]; //................................... get the key
+                            int length = NUM_OF_BITS.get(key); //..................................... determine length of the array with the key
+                            int[] dataArray = data.get(key); //....................................... pointer to that array so we can manipulate
 
-                        for( int bitIndex = 0; bitIndex < length; bitIndex++ ){ //.................. loop through each value in the array from the key
-                            if( line.charAt(bitIndex) != '0' ){ dataArray[ bitIndex ]++; } //....... if it's not a 0 increment the value in the current array to a 1
+                            for (int bitIndex = 0; bitIndex < length; bitIndex++) { //.................. loop through each value in the array from the key
+                                if (line.charAt(bitIndex) != '0') {
+                                    dataArray[bitIndex]++;
+                                } //....... if it's not a 0 increment the value in the current array to a 1
+                            }
+
+                            line = line.substring(length); //......................................... cut the data we just processed out of the line
                         }
-
-                        line = line.substring( length ); //......................................... cut the data we just processed out of the line
                     }
 
                     row++; //....................................................................... once the line is finished go to the next one
@@ -87,22 +95,6 @@ public class Options {
                         ipAddresses--;
                     }
                 }
-//
-//                if( Integer.parseInt(Header.binaryToDecimal(data.get(OPTION_NUMBER))) == 9 ){
-//                    int ipAddresses = (Integer.parseInt(Header.binaryToDecimal(data.get(LENGTH))) - 3) / 4;
-//                    while( (line = bufferedReader.readLine()) != null && ipAddresses > 0 ){
-//                        int[] dataArray = new int[32];
-//
-//                        for( int index = 0; index < dataArray.length; index++ ){
-//                            if( line.charAt(index) != '0' ){ dataArray[ index ]++; }
-//                        }
-//
-//                        System.out.println( Arrays.toString( dataArray ) );
-//
-//                        sourceRoute.add( dataArray );
-//                        ipAddresses--;
-//                    }
-//                }
 
                 bufferedReader.close(); //.......................................................... close the file connection
             }
@@ -153,6 +145,6 @@ public class Options {
     }
 
     public ArrayList< int[] > getRecordRoute(){ return recordRoute; }
-
     public ArrayList< int[] > getSourceRoute(){ return sourceRoute; }
+    public int getTotalBytes(){ return totalBytes; }
 }
