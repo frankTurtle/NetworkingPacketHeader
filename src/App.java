@@ -7,6 +7,7 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -20,6 +21,7 @@ public class App {
 
     public static void main( String[] args ){
         Header test = new Header( "test", true );
+        ArrayList< String > output = new ArrayList<>();
         System.out.println( test );
 
 //        for( int row = 0; row < routingTable.getTableRows().size(); row++ ){
@@ -32,7 +34,10 @@ public class App {
 
         System.out.println( testIpAddress( test.getSourceAddress()) );
 
-        writeToFile("");
+        output.add( "Success" );
+        output.add( "hooray" );
+
+        writeToFile( output );
 
 //        System.out.println( Integer.parseInt(Integer.toBinaryString(110), 2) );
     }
@@ -41,11 +46,11 @@ public class App {
         return new RoutingTable().ipExistInTable( ipAddress );
     }
 
-    private static void writeToFile( String input ){
-        List<String> lines = Arrays.asList("The first line", "The second line");
-        Path file = Paths.get("output.txt");
+    private static void writeToFile( ArrayList<String> input ){
+        List< String > lines = input;
+        Path file = Paths.get( "output.txt" );
         try{
-            Files.write(file, lines, Charset.forName("UTF-8"));
+            Files.write( file, lines, Charset.forName("UTF-8") );
         }
         catch( IOException e ){
             System.out.println( "error" + e.toString() );
