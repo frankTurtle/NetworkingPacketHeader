@@ -74,15 +74,15 @@ public class RoutingTable {
     public ArrayList< HashMap<String, int[]> > getTableRows(){ return tableRows; }
 
     public boolean ipExistInTable( String ipAddress ){
-        String convertedIP = "";
+        String convertedIP = createIPString(createIPArray(addMaskToAddress(ipAddress, MASK)));
         String convertedOrigin = "";
         String convertedDestination = "";
 
         System.out.println( createIPString(createIPArray(addMaskToAddress(ipAddress, MASK))) );
 
         for( HashMap<String, int[]> entry : getTableRows() ) {
-            if (createIPString(entry.get(ORIGIN)).equals(ipAddress) ||
-                    createIPString(entry.get(DESTINATION)).equals(ipAddress)) return true;
+            if (createIPString(entry.get(ORIGIN)).equals(convertedIP) ||
+                    createIPString(entry.get(DESTINATION)).equals(convertedIP)) return true;
 
 
 //            System.out.println("IN: " + ipAddress);
@@ -97,8 +97,6 @@ public class RoutingTable {
         String[] binary = address.split( "\\." );
         String updatedAddress = "";
         String addressPart;
-
-        System.out.println( Arrays.toString(binary) );
 
         for( int index = 0; index < binary.length; index++ ){
             addressPart = Integer.toBinaryString( Integer.parseInt(binary[index]));

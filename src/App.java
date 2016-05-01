@@ -9,6 +9,7 @@ public class App {
     private static final String PORT = "port";
     private static final String MTU = "mtu";
     private static final String DESTINATION = "destination";
+
     private static RoutingTable routingTable = new RoutingTable();
 
     public static void main( String[] args ){
