@@ -28,10 +28,12 @@ public class App {
 //            System.out.println( row+1 + ": "  + Arrays.toString( routingTable.getTableRows().get(row).get(DESTINATION)) );
 //        }
 
-        Options testOptions = new Options( "test", true );
-        System.out.println( testOptions );
+//        Options testOptions = new Options( "test", true );
+        Options test2Options = new Options( "test2", true );
 
-        for( int[] num : testOptions.getRecordRoute() ){
+        System.out.println( test2Options );
+
+        for( int[] num : test2Options.getRecordRoute() ){
             System.out.println(Arrays.toString(num));
         }
 

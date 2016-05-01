@@ -69,17 +69,21 @@ public class Options {
                     row++; //....................................................................... once the line is finished go to the next one
                 }
 
-                int ipAddresses = (Integer.parseInt(Header.binaryToDecimal(data.get(LENGTH))) - 3) / 4;
+                if( Integer.parseInt(Header.binaryToDecimal(data.get(OPTION_NUMBER))) == 7 ){
+                    int ipAddresses = (Integer.parseInt(Header.binaryToDecimal(data.get(LENGTH))) - 3) / 4;
 
-                while( (line = bufferedReader.readLine()) != null && ipAddresses > 0 ){
-                    int[] dataArray = new int[32];
+                    System.out.println( ipAddresses );
 
-                    for( int index = 0; index < dataArray.length; index++ ){
-                        if( line.charAt(index) != '0' ){ dataArray[ index ]++; }
+                    while( (line = bufferedReader.readLine()) != null && ipAddresses > 0 ){
+                        int[] dataArray = new int[32];
+
+                        for( int index = 0; index < dataArray.length; index++ ){
+                            if( line.charAt(index) != '0' ){ dataArray[ index ]++; }
+                        }
+
+                        recordRoute.add( dataArray );
+                        ipAddresses--;
                     }
-
-                    recordRoute.add( dataArray );
-                    ipAddresses--;
                 }
 
                 bufferedReader.close(); //.......................................................... close the file connection
