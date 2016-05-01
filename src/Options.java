@@ -6,9 +6,8 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.lang.reflect.Array;
+import java.util.*;
 
 public class Options {
     private static final Map< String, Integer > NUM_OF_BITS = createMap(); //... variable to hold the Packet strings and array lengths
@@ -21,6 +20,7 @@ public class Options {
     private static final String PADDING = "Padding";
 
     private Map< String, int[] > data; //....................................... variable to contain the data passed in
+    private ArrayList< int[] > recordRoute; //................................. variable for all the recordRoute IP Addresses
 
     public Options(){
         data = new HashMap<>(); //..................... instantiate data variable
@@ -32,6 +32,8 @@ public class Options {
                 data.put( key, bitArray ); //.......... put into data HashMap!
             }
         }
+
+        recordRoute = new ArrayList<>();
     }
 
     // Constructor with parameters
@@ -50,7 +52,7 @@ public class Options {
                 FileReader fileReader = new FileReader( input + ".txt" ); //........................ open up the file
                 BufferedReader bufferedReader = new BufferedReader( fileReader ); //................ pass it along to buffered reader in the event of overflow
 
-                while( (line = bufferedReader.readLine()) != null && row < 1 ) { //................. while there are lines left to read
+                while( row < 1 && (line = bufferedReader.readLine()) != null ){ //.................. while there are lines left to read
                     if( header > 0 ){ header--; continue; } //...................................... ignores all the header lines in the packet
                     for( int index = 0; index < PACKET_ORDER[row].length; index++ ){ //............. loop through each array in the packet labels
                         String key = PACKET_ORDER[row][index]; //................................... get the key
@@ -65,6 +67,19 @@ public class Options {
                     }
 
                     row++; //....................................................................... once the line is finished go to the next one
+                }
+
+                int ipAddresses = (Integer.parseInt(Header.binaryToDecimal(data.get(LENGTH))) - 3) / 4;
+
+                while( (line = bufferedReader.readLine()) != null && ipAddresses > 0 ){
+                    int[] dataArray = new int[32];
+
+                    for( int index = 0; index < dataArray.length; index++ ){
+                        if( line.charAt(index) != '0' ){ dataArray[ index ]++; }
+                    }
+
+                    recordRoute.add( dataArray );
+                    ipAddresses--;
                 }
 
                 bufferedReader.close(); //.......................................................... close the file connection
@@ -88,7 +103,7 @@ public class Options {
         result.put( LENGTH, 8 );
         result.put( POINTER, 8 );
         result.put( PADDING, 8 );
-        return Collections.unmodifiableMap( result ); //.... make it final
+        return result; //.... make it final
     }
 
     // Method to return a String array with the proper order
@@ -114,4 +129,6 @@ public class Options {
 
         return returnString;
     }
+
+    public ArrayList< int[] > getRecordRoute(){ return recordRoute; }
 }

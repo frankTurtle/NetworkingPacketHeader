@@ -81,11 +81,6 @@ public class RoutingTable {
         System.out.println( createIPString(createIPArray(addMaskToAddress(ipAddress, MASK))) );
 
         for( HashMap<String, int[]> entry : getTableRows() ) {
-            System.out.println("IN: " + ipAddress);
-            System.out.println("CNVERT: " + convertedIP);
-            System.out.println("ORIGIN: " + createIPString(entry.get(ORIGIN)));
-            System.out.println("DEST: " + createIPString(entry.get(DESTINATION)) + "\n\n");
-
             if (createIPString(entry.get(ORIGIN)).equals(convertedIP) ||
                     createIPString(entry.get(DESTINATION)).equals(convertedIP)) return true;
         }

@@ -8,6 +8,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class App {
@@ -30,13 +31,17 @@ public class App {
         Options testOptions = new Options( "test", true );
         System.out.println( testOptions );
 
+        for( int[] num : testOptions.getRecordRoute() ){
+            System.out.println(Arrays.toString(num));
+        }
 
-        System.out.println( testIpAddress( test.getSourceAddress()) );
+
+//        System.out.println( testIpAddress( test.getSourceAddress()) );
 
         output.add( "Success" );
         output.add( "hooray" );
 
-        writeToFile( output );
+//        writeToFile( output );
 
 //        System.out.println( Integer.parseInt(Integer.toBinaryString(110), 2) );
     }
