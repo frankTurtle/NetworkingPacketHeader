@@ -32,9 +32,8 @@ public class App {
     private static RoutingTable routingTable = new RoutingTable();
 
     public static void main( String[] args ){
-        Header testHeader = new Header( "testEmpty" +
-                "", true );
-        Options testOptions = new Options( "testEmpty", true );
+        Header testHeader = new Header( "test", true );
+        Options testOptions = new Options( "test", true );
         ArrayList< String > output = new ArrayList<>();
 
         if( ableToTransmit(testHeader, testOptions, output) ){
@@ -69,7 +68,7 @@ public class App {
                                               Options testOptions, ArrayList<String> output ){
         int totalPackets = (int)Math.ceil( packetSize / mtu + 1.5 ); //.......................................... gets the total number of packets we'll have to send
         int ttl = Integer.parseInt(Header.binaryToDecimal(testHeader.getData().get(TTLIVE)) ) - 1; //............ update the TTL
-        int dataField; //........................................................................................ instance variables
+        int dataField = 0; //........................................................................................ instance variables
         int fragOffset = 0;
         int dataLeft = packetSize;
 
@@ -78,8 +77,6 @@ public class App {
                 testHeader.setHeaderLength( binaryToArray(Integer.toBinaryString(5))); //........................ set the length to 5
                 testHeader.setFragOffset( binaryToArray(Integer.toBinaryString(fragOffset))); //................. set the fragment offsets
                 fragOffset += fragOffset; //..................................................................... update offsets to new value for next round
-                if( send + 1 == totalPackets ) //................................................................ if this is the last packet
-                    testHeader.setFlag( binaryToArray(Integer.toBinaryString(0))); //............................ set the flag to indicate its the last
             }
 
             int totalLength = mtu; //............................................................................ get total length of this network
@@ -105,12 +102,19 @@ public class App {
             dataField = totalLength - headerLength; //........................................................... update values
             dataLeft -= dataField;
 
+            if( send > 0 ){
+                if( dataLeft == 0 ) { //......................................................................... if this is the last packet
+                    testHeader.setFlag(binaryToArray(Integer.toBinaryString(0))); //............................. set the flag to indicate its the last
+                }
+            }
+
             String outputString = ( send == 0 ) //............................................................... if its the end
                     ? "Fragment " + (send + 1) + outputStringHelper(testHeader, testOptions)  //................. special format output
                         + String.format( "%21s: %s%n", "Data Field", dataField )
                     : "Fragment " + (send + 1) + getLine() + "\n" + testHeader.toString() //..................... normal format output
                         + String.format( "%21s: %s%n", "Data Field", dataField);
             if( !(dataField <= 0) )output.add( outputString ); //................................................ add to output to be printed
+//            output.add( outputString );
         }
     }
 
