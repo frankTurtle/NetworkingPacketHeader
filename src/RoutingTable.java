@@ -182,8 +182,6 @@ public class RoutingTable {
         String returnIP = "";
         RoutingTable temp = new RoutingTable();
 
-        System.out.println( address );
-
         if( ipExistInTable(address) ){ //.............................................................. if its a valid IP
             for( HashMap<String, int[]> entry : temp.getTableRows() ){ //................................... loop over the entries
                 if( createIPString(entry.get(DESTINATION)).equals(address) ){
