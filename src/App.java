@@ -32,7 +32,8 @@ public class App {
     private static RoutingTable routingTable = new RoutingTable();
 
     public static void main( String[] args ){
-        Header testHeader = new Header( "testEmpty", true );
+        Header testHeader = new Header( "testEmpty" +
+                "", true );
         Options testOptions = new Options( "testEmpty", true );
         ArrayList< String > output = new ArrayList<>();
 
