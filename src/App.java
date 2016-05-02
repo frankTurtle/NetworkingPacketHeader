@@ -19,8 +19,8 @@ public class App {
     private static RoutingTable routingTable = new RoutingTable();
 
     public static void main( String[] args ){
-        Header testHeader = new Header( "test", true );
-        Options testOptions = new Options( "test", true );
+        Header testHeader = new Header( "testFarPacket", true );
+        Options testOptions = new Options( "testFarPacket", true );
         ArrayList< String > output = new ArrayList<>();
 
         if( ableToTransmit(testHeader, testOptions, output) ){
@@ -85,14 +85,12 @@ public class App {
                 int num = Integer.parseInt( Header.binaryToDecimal(testOptions.getData().get(OPTION_NUMBER)) );
                 if( num == 7 ){ //............................................................................... if its a Record Route
                     String maskedAddress = RoutingTable.convertWithMask(testHeader.getDestAddress());
-                    String[] ipArray = createStringIPArray(maskedAddress);
-
+                    String[] ipArray = createStringIPArray(RoutingTable.getDestinationIPFromAddress(maskedAddress));
                     testOptions.addRecordRouteIPAddress( convertStringArrayIntoIPArray(ipArray) );
                 }
                 else if( num == 9 ){ //.......................................................................... if its a Strict Route
                     String maskedAddress = RoutingTable.convertWithMask(testHeader.getDestAddress());
-                    String[] ipArray = createStringIPArray(maskedAddress);
-
+                    String[] ipArray = createStringIPArray(RoutingTable.getDestinationIPFromAddress(maskedAddress));
                     testOptions.addSourceRouteIPAddress( convertStringArrayIntoIPArray(ipArray) );
                 }
             }
@@ -197,8 +195,11 @@ public class App {
             String outputString = ( testIpAddress(testHeader.getDestAddress()) ) //..................................... determine source or dest error
                     ? "Source"
                     : "Destination";
+            String address  = ( testIpAddress(testHeader.getDestAddress()) ) //......................................... determine source or dest error
+                    ? testHeader.getSourceAddress()
+                    : testHeader.getDestAddress();
 
-            output.add( String.format("Unknown %s: %s", outputString, testHeader.getDestAddress()) ); //................ built error string
+            output.add( String.format("Unknown %s: %s", outputString, address) ); //.................................... built error string
             writeToFile( output, "output" ); //......................................................................... write error log
             System.out.println( "Error, check log" );
             System.exit(0);
