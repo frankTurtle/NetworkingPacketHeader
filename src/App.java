@@ -29,12 +29,9 @@ public class App {
                     ? testHeader.getTotalBytes()
                     : testOptions.getTotalBytes();
 
-            if( fragmentPacket(mtu, packetSize) ){ //........................................ if the packet needs to be fragmented
-                System.out.println( "File is fragmented, check log." );
-                processFragmentation( packetSize, mtu, testHeader, testOptions, output ); //. fragment it!
-            }
+            processFragmentation( packetSize, mtu, testHeader, testOptions, output ); //. fragment it!
         }
-        writeToFile( output, "output" ); //.................................................. write results to file
+        writeToFile( output, "output" ); //.............................................. write results to file
     }
 
     // Method to help with output string
@@ -215,7 +212,21 @@ public class App {
                 System.out.println( "Error, check log" );
                 System.exit(0);
             }
+            int mtu = routingTable.getMtu(testHeader.getDestAddress());
+            int packetSize = ( testHeader.getTotalBytes() > 0 )
+                    ? testHeader.getTotalBytes()
+                    : testOptions.getTotalBytes();
+
+            if( testHeader.getFlag()[1] == 1 && fragmentPacket(mtu, packetSize) ){
+                output.add( "Packet unable to be fragmented and is too large for the network" ); //..................... build error string
+                writeToFile( output, "output" ); //..................................................................... write error log
+                System.out.println( "Error, check log" );
+                System.exit(0);
+            }
+            else
+                System.out.println( "File is fragmented, check log." );
         }
+
 
         return true;
     }
