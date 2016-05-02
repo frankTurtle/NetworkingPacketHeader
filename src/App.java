@@ -82,12 +82,18 @@ public class App {
                 testHeader.setFlag( binaryToArray(Integer.toBinaryString(1))); //................................ set flag to 1
                 fragOffset = (totalLength - headerLength) / 8; //................................................ calculate the offset
                 incrementPointer( testOptions );
-                int num = Integer.parseInt( Header.binaryToDecimal(testOptions.getData().get( OPTION_NUMBER )) );
-                if( num == 7 ){
+                int num = Integer.parseInt( Header.binaryToDecimal(testOptions.getData().get(OPTION_NUMBER)) );
+                if( num == 7 ){ //............................................................................... if its a Record Route
                     String maskedAddress = RoutingTable.convertWithMask(testHeader.getDestAddress());
                     String[] ipArray = createStringIPArray(maskedAddress);
 
                     testOptions.addRecordRouteIPAddress( convertStringArrayIntoIPArray(ipArray) );
+                }
+                else if( num == 9 ){ //.......................................................................... if its a Strict Route
+                    String maskedAddress = RoutingTable.convertWithMask(testHeader.getDestAddress());
+                    String[] ipArray = createStringIPArray(maskedAddress);
+
+                    testOptions.addSourceRouteIPAddress( convertStringArrayIntoIPArray(ipArray) );
                 }
             }
 
@@ -117,14 +123,12 @@ public class App {
 
     // Helper method to convert a string into an binary array
     public static String[] createStringIPArray(String stringToConvert ){
-        int[] returnArray = new int[4]; //............................. create an array to return
+        int[] returnArray = new int[4]; //.................................. create an array to return
         String[] nums = stringToConvert.split("\\.");
 
         for( int i = 0; i < nums.length; i++ ){
             nums[ i ] = Integer.toBinaryString(Integer.parseInt(nums[i]));
-        }
-        for( int i = 0; i < nums.length; i++ ){
-            while( (nums[i].length() % 8) != 0 ){  //............... if it doesnt equal 8 chars add leading 0's
+            while( (nums[i].length() % 8) != 0 ){  //....................... if it doesnt equal 8 chars add leading 0's
                 nums[ i ] = String.format( "0%s", nums[i]);
             }
         }
@@ -141,14 +145,14 @@ public class App {
         int startIndex = 0;
 
         for( String segment : convertMe ){
-            for( int index = 0; index < segment.length(); index++ ){ //............. loop through each array in the packet labels
-                int length = 8; //..................................... determine length of the array with the key
-                for( int bitIndex = 0; bitIndex < length; bitIndex++ ){ //.................. loop through each value in the array from the key
-                    returnArray[ startIndex ] = Character.getNumericValue( segment.charAt( bitIndex ) ); //...... if it's not a 0 increment the value in the current array to a 1
+            for( int index = 0; index < segment.length(); index++ ){ //...................................... loop through each array in the packet labels
+                int length = 8; //........................................................................... determine length of the array with the key
+                for( int bitIndex = 0; bitIndex < length; bitIndex++ ){ //................................... loop through each value in the array from the key
+                    returnArray[ startIndex ] = Character.getNumericValue( segment.charAt( bitIndex ) ); //.. if it's not a 0 increment the value in the current array to a 1
                     startIndex++;
                 }
 
-                segment = segment.substring( length ); //......................................... cut the data we just processed out of the line
+                segment = segment.substring( length ); //..................................................... cut the data we just processed out of the line
             }
         }
 

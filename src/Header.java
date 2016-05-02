@@ -25,7 +25,6 @@ public class Header {
     private static final String CHECKSUM       = "Checksum";
     private static final String SOURCE_ADDRESS = "Source Address";
     private static final String DEST_ADDRESS   = "Destination Address";
-    private static final int SIZE = 160; //..................................... variable used to check if header size is legit
     private static final String[][] PACKET_ORDER = createPacketOrder(); //...... variable to have the order of packets align with design
 
     private Map< String, int[] > data; //....................................... variable to contain the data passed in
@@ -142,7 +141,8 @@ public class Header {
     // Method to test out the creation of hte HashMap
     public void printMap(){
         for( String row[] : PACKET_ORDER ){
-            for( String key : row ) System.out.println( key + " " + Arrays.toString(data.get(key)) );
+            for( String key : row )
+                System.out.println( key + " " + Arrays.toString(data.get(key)) );
         }
     }
 

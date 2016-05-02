@@ -93,9 +93,9 @@ public class RoutingTable {
 
     // Method to determine if the IP passed in is part of the list
     public boolean ipExistInTable( String ipAddress ){
-        String convertedIP = createIPString(createIPArray(addMaskToAddress(ipAddress))); //. converts the IP with the MASK
+        String convertedIP = createIPString(createIPArray(addMaskToAddress(ipAddress))); //... converts the IP with the MASK
 
-        for( HashMap<String, int[]> entry : getTableRows() ) { //................................. checks each entry
+        for( HashMap<String, int[]> entry : getTableRows() ) { //............................. checks each entry
             if( createIPString(entry.get(ORIGIN)).equals(convertedIP) ||
                     createIPString(entry.get(DESTINATION)).equals(convertedIP)) return true;
         }
@@ -124,10 +124,6 @@ public class RoutingTable {
         long maskNum = Long.parseLong( MASK,2 );
         updatedNum = updatedNum & maskNum; //...................................... and them together with the mask
         updatedAddress = Long.toBinaryString( updatedNum ); //..................... output the binary string
-
-//        0110 1110  0010 0000  0010 0000  0101 0000
-
-//        System.out.println( "updated: " + updatedAddress );
 
         return updatedAddress;
     }
@@ -162,9 +158,5 @@ public class RoutingTable {
 
         return convertedIP;
     }
-
-//    public static int[] convertWithMask( String convertMe ){
-//        return createStringIPArray( addMaskToAddress(convertMe) );
-//    }
 }
 

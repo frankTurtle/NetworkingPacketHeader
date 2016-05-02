@@ -14,7 +14,7 @@ public class Options {
     private static final String COPY_FLAG = "Copy Flag";
     private static final String OPTION_CLASS = "Option Class";
     private static final String OPTION_NUMBER = "Option Number";
-    private static final String LENGTH = "Length"; //........******** INCLUDES THE FIRST THREE OCtets
+    private static final String LENGTH = "Length";
     private static final String POINTER = "Pointer";
     private static final String PADDING = "Padding";
 
@@ -130,21 +130,23 @@ public class Options {
     // Method to return a formatted String representing all data
     // Overridden
     public String toString(){
-        String returnString = ""; //......................................................... variable to return
+        String returnString = ""; //........................................... variable to return
 
-        for( String row[] : PACKET_ORDER ){ //............................................... loop through each row in packet
-            for( String key : row ){ //...................................................... loop through each item in that row
+        for( String row[] : PACKET_ORDER ){ //................................. loop through each row in packet
+            for( String key : row ){ //........................................ loop through each item in that row
                 if( key.equals(PADDING) ) continue;
                 String value = Header.binaryToDecimal( data.get(key) );
-                returnString += String.format( "%21s: %s%n", key, value ); //................ build return string
+                returnString += String.format( "%21s: %s%n", key, value ); //.. build return string
             }
         }
 
-        for( int[] ipAddress : recordRoute ) {
-            returnString += String.format( "%21s: %s%n", "Option IP", Header.binaryIPConvert(ipAddress) );
+        for( int[] ipAddress : recordRoute ) { //.............................. loop through each record route
+            returnString += String.format( "%21s: %s%n", "Option IP",
+                    Header.binaryIPConvert(ipAddress) ); //.................... add entry into output
         }
-        for( int[] ipAddress : sourceRoute ) {
-            returnString += String.format( "%21s: %s%n", "Option IP", Header.binaryIPConvert(ipAddress) );
+        for( int[] ipAddress : sourceRoute ) { //.............................. loop through each source route
+            returnString += String.format( "%21s: %s%n", "Option IP",
+                    Header.binaryIPConvert(ipAddress) ); //.................... add entry into output
         }
 
         return returnString;
@@ -156,20 +158,23 @@ public class Options {
     public Map<String, int[]> getData() { return data; }
     public int getCopyFlag(){ return data.get(COPY_FLAG)[0]; }
 
+    // Method to add the addresss to the record
     public void addRecordRouteIPAddress( int[] address ){
         recordRoute.add( address );
     }
 
+    // Method to add the string as an int array to the record
     public void addRecordRouteIPAddress( String address ){
         int[] dataArray = new int[32];
 
-        for( int index = 0; index < dataArray.length; index++ ){ //................... get the full line
+        for( int index = 0; index < dataArray.length; index++ ){
             if( address.charAt(index) != '0' ){ dataArray[ index ]++; }
         }
 
         this.addRecordRouteIPAddress(dataArray);
     }
 
+    // Method to add the int array to the source list
     public void addSourceRouteIPAddress( int[] address ){
         sourceRoute.add( address );
     }
