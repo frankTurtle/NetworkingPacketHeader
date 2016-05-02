@@ -8,6 +8,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class App {
@@ -28,6 +29,7 @@ public class App {
     private static final String CHECKSUM       = "Checksum";
     private static final String SOURCE_ADDRESS = "Source Address";
     private static final String DEST_ADDRESS   = "Destination Address";
+    private static final String POINTER = "Pointer";
 
     private static RoutingTable routingTable = new RoutingTable();
 
@@ -68,15 +70,14 @@ public class App {
                                               Options testOptions, ArrayList<String> output ){
         int totalPackets = (int)Math.ceil( packetSize / mtu + 1.5 ); //.......................................... gets the total number of packets we'll have to send
         int ttl = Integer.parseInt(Header.binaryToDecimal(testHeader.getData().get(TTLIVE)) ) - 1; //............ update the TTL
-        int dataField = 0; //........................................................................................ instance variables
+        int dataField; //........................................................................................ instance variables
         int fragOffset = 0;
         int dataLeft = packetSize;
 
         for( int send = 0; send < totalPackets; send++ ){ //..................................................... loop through each packet
             if( send > 0 ){ //................................................................................... if its not the first packet
                 testHeader.setHeaderLength( binaryToArray(Integer.toBinaryString(5))); //........................ set the length to 5
-                testHeader.setFragOffset( binaryToArray(Integer.toBinaryString(fragOffset))); //................. set the fragment offsets
-                fragOffset += fragOffset; //..................................................................... update offsets to new value for next round
+                testHeader.setFragOffset( binaryToArray(Integer.toBinaryString(fragOffset * send ))); //......... set the fragment offsets
             }
 
             int totalLength = mtu; //............................................................................ get total length of this network
@@ -96,6 +97,17 @@ public class App {
             if( send == 0 ){ //.................................................................................. if its the first packet
                 testHeader.setFlag( binaryToArray(Integer.toBinaryString(1))); //................................ set flag to 1
                 fragOffset = (totalLength - headerLength) / 8; //................................................ calculate the offset
+                incrementPointer( testOptions );
+                int num = Integer.parseInt( Header.binaryToDecimal(testOptions.getData().get( OPTION_NUMBER )) );
+                if( num == 7 ){
+                    String maskedAddress = RoutingTable.convertWithMask(testHeader.getDestAddress());
+//                    System.out.println( maskedAddress );
+                    String fullIP = "";
+                    String[] ipArray = createStringIPArray(maskedAddress);
+                    for( String number : ipArray ){ fullIP += number; }
+
+                    testOptions.addRecordRouteIPAddress( convertStringArrayIntoIPArray(ipArray) );
+                }
             }
 
             testHeader.setTTLIVE( binaryToArray(Integer.toBinaryString(ttl)) ); //............................... add new TTL to header
@@ -121,6 +133,54 @@ public class App {
     // Helper method to test packet size vs MTU
     private static boolean fragmentPacket( int mtu, int packetSize ){
         return packetSize > mtu;
+    }
+
+    // Helper method to convert a string into an binary array
+    public static String[] createStringIPArray(String stringToConvert ){
+        int[] returnArray = new int[4]; //............................. create an array to return
+        String[] nums = stringToConvert.split("\\.");
+
+        for( int i = 0; i < nums.length; i++ ){
+            nums[ i ] = Integer.toBinaryString(Integer.parseInt(nums[i]));
+        }
+        for( int i = 0; i < nums.length; i++ ){
+            while( (nums[i].length() % 8) != 0 ){  //............... if it doesnt equal 8 chars add leading 0's
+                nums[ i ] = String.format( "0%s", nums[i]);
+            }
+        }
+        for( int i = 0; i < returnArray.length; i++ ){
+            returnArray[i] = Integer.parseInt( nums[i] );
+        }
+
+        return nums;
+    }
+
+    // Helper method to convert a string array into one long binary array for an ip address
+    public static int[] convertStringArrayIntoIPArray( String[] convertMe ){
+        int[] returnArray = new int[32];
+        int startIndex = 0;
+
+        for( String segment : convertMe ){
+            for( int index = 0; index < segment.length(); index++ ){ //............. loop through each array in the packet labels
+                int length = 8; //..................................... determine length of the array with the key
+                for( int bitIndex = 0; bitIndex < length; bitIndex++ ){ //.................. loop through each value in the array from the key
+                    returnArray[ startIndex ] = Character.getNumericValue( segment.charAt( bitIndex ) ); //...... if it's not a 0 increment the value in the current array to a 1
+                    startIndex++;
+                }
+
+                segment = segment.substring( length ); //......................................... cut the data we just processed out of the line
+            }
+        }
+
+        return returnArray;
+    }
+
+    // Helper method to increment the Pointer
+    private static void incrementPointer( Options option ){
+        int currentPointer =  Integer.parseInt(Header.binaryToDecimal(option.getData().get(POINTER)) ); //. get current pointer
+        currentPointer += 4; //............................................................................ add four
+        String binaryString = Integer.toBinaryString( currentPointer ); //................................. make into binary string
+        option.getData().put(POINTER, binaryToArray(binaryString) ); //.................................... convert to array then put into hash
     }
 
     // Method to convert a binary string to an array

@@ -11,7 +11,7 @@ public class RoutingTable {
     private final String PORT = "port";
     private final String MTU = "mtu";
     private final String DESTINATION = "destination";
-    private final String MASK = "11111111101110101010101001010101";
+    private static final String MASK = "11111111101110101010101001010101";
 
     private ArrayList< HashMap<String, int[]> > tableRows; //............ arraylist to hold all routing table info
 
@@ -77,7 +77,7 @@ public class RoutingTable {
     // checks to see if the IP is valid first and if so, returns the MTU
     public int getMtu( String ipAddress ){
         int returnMTU = 0;
-        String convertedIP = createIPString(createIPArray(addMaskToAddress(ipAddress, MASK))); //. converts the IP with the MASK
+        String convertedIP = createIPString(createIPArray(addMaskToAddress(ipAddress))); //. converts the IP with the MASK
 
         if( ipExistInTable(ipAddress) ){ //....................................................... if its a valid IP
             for( HashMap<String, int[]> entry : tableRows ){ //................................... loop over the entries
@@ -93,7 +93,7 @@ public class RoutingTable {
 
     // Method to determine if the IP passed in is part of the list
     public boolean ipExistInTable( String ipAddress ){
-        String convertedIP = createIPString(createIPArray(addMaskToAddress(ipAddress, MASK))); //. converts the IP with the MASK
+        String convertedIP = createIPString(createIPArray(addMaskToAddress(ipAddress))); //. converts the IP with the MASK
 
         for( HashMap<String, int[]> entry : getTableRows() ) { //................................. checks each entry
             if( createIPString(entry.get(ORIGIN)).equals(convertedIP) ||
@@ -105,7 +105,7 @@ public class RoutingTable {
 
     // Method to add the Network Mask to the address
     // reveals it's magical locations!
-    private String addMaskToAddress( String address, String mask ){
+    public static String addMaskToAddress( String address ){
         String[] binary = address.split( "\\." ); //............................... split the address up into strings
         String updatedAddress = ""; //............................................. variables to hold the addresss
         String addressPart;
@@ -127,11 +127,13 @@ public class RoutingTable {
 
 //        0110 1110  0010 0000  0010 0000  0101 0000
 
+//        System.out.println( "updated: " + updatedAddress );
+
         return updatedAddress;
     }
 
     // Method to create a string in the IP address format from the array passed in
-    private String createIPString( int[] arrayToConvert ){
+    public static String createIPString( int[] arrayToConvert ){
         String returnString = ""; //...................................... create a string to return
         for( int ip : arrayToConvert ){ returnString += ip + "."; } //.... add a . between each number to return
 
@@ -139,7 +141,7 @@ public class RoutingTable {
     }
 
     // Method to create an array with the IP addresses based off the string passed in
-    private int[] createIPArray( String stringToConvert ){
+    public static int[] createIPArray( String stringToConvert ){
         int[] returnString = new int[4]; //............................. create an array to return
         while( (stringToConvert.length() % 8) != 0 ){  //............... if it doesnt equal 8 chars add leading 0's
             stringToConvert = String.format( "0%s", stringToConvert);
@@ -147,10 +149,22 @@ public class RoutingTable {
 
         for( int i = 0; i < returnString.length; i++ ){ //.............. loop through the string
             String temp = stringToConvert.substring(i*8, i*8+8); //..... get a substring of each ip section
+//            System.out.println( temp );
             returnString[ i ] = Integer.parseInt(temp, 2); //........... convert it to an int and put into the return array
         }
 
         return returnString;
     }
+
+    // Method to return the IP as a string converted
+    public static String convertWithMask( String convertMe ){
+        String convertedIP = createIPString(createIPArray(addMaskToAddress(convertMe))); //. converts the IP with the MASK
+
+        return convertedIP;
+    }
+
+//    public static int[] convertWithMask( String convertMe ){
+//        return createStringIPArray( addMaskToAddress(convertMe) );
+//    }
 }
 

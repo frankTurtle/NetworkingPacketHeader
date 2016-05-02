@@ -90,7 +90,7 @@ public class Options {
                         }
 
                         if( optionChosen == 7 ) recordRoute.add( dataArray ); //...................... if it's a record, put in record list
-                        else sourceRoute.add( dataArray ); //......................................... if its a sourceRoute, put in that list
+                        else if( optionChosen == 9 ) sourceRoute.add( dataArray ); //................. if its a sourceRoute, put in that list
                         ipAddresses--; //............................................................. decrement the list of IP addresses
                     }
                     if( line.length() != 32 ){ totalBytes = Integer.parseInt( line ); } //............ if the line is the bytetotal get it
@@ -141,6 +141,13 @@ public class Options {
             }
         }
 
+        for( int[] ipAddress : recordRoute ) {
+            returnString += String.format( "%21s: %s%n", "Option IP", Header.binaryIPConvert(ipAddress) );
+        }
+        for( int[] ipAddress : sourceRoute ) {
+            returnString += String.format( "%21s: %s%n", "Option IP", Header.binaryIPConvert(ipAddress) );
+        }
+
         return returnString;
     }
 
@@ -148,4 +155,22 @@ public class Options {
     public ArrayList< int[] > getSourceRoute(){ return sourceRoute; }
     public int getTotalBytes(){ return totalBytes; }
     public Map<String, int[]> getData() { return data; }
+
+    public void addRecordRouteIPAddress( int[] address ){
+        recordRoute.add( address );
+    }
+
+    public void addRecordRouteIPAddress( String address ){
+        int[] dataArray = new int[32];
+
+        for( int index = 0; index < dataArray.length; index++ ){ //................... get the full line
+            if( address.charAt(index) != '0' ){ dataArray[ index ]++; }
+        }
+
+        this.addRecordRouteIPAddress(dataArray);
+    }
+
+    public void addSourceRouteIPAddress( int[] address ){
+        sourceRoute.add( address );
+    }
 }
