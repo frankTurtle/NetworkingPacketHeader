@@ -8,34 +8,19 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class App {
-    private static final String ORIGIN         = "origin";
-    private static final String PORT           = "port";
-    private static final String MTU            = "mtu";
-    private static final String DESTINATION    = "destination";
     private static final String OPTION_NUMBER  = "Option Number";
-    private static final String VERSION        = "Version"; //.................. final variables to be used for the HashMap keys
     private static final String HEADER_LENGTH  = "Header Length";
-    private static final String SERVICE_TYPE   = "Service Type";
-    private static final String TOTAL_LENGTH   = "Total Length";
-    private static final String ID             = "Identification";
-    private static final String FLAG           = "Flags";
-    private static final String FRAG_OFFSET    = "Fragmentation Offset";
     private static final String TTLIVE         = "Time To Live";
-    private static final String PROTOCOL       = "Protocol";
-    private static final String CHECKSUM       = "Checksum";
-    private static final String SOURCE_ADDRESS = "Source Address";
-    private static final String DEST_ADDRESS   = "Destination Address";
-    private static final String POINTER = "Pointer";
+    private static final String POINTER        = "Pointer";
 
     private static RoutingTable routingTable = new RoutingTable();
 
     public static void main( String[] args ){
-        Header testHeader = new Header( "test", true );
-        Options testOptions = new Options( "test", true );
+        Header testHeader = new Header( "testMTU512", true );
+        Options testOptions = new Options( "testMTU512", true );
         ArrayList< String > output = new ArrayList<>();
 
         if( ableToTransmit(testHeader, testOptions, output) ){
@@ -101,10 +86,7 @@ public class App {
                 int num = Integer.parseInt( Header.binaryToDecimal(testOptions.getData().get( OPTION_NUMBER )) );
                 if( num == 7 ){
                     String maskedAddress = RoutingTable.convertWithMask(testHeader.getDestAddress());
-//                    System.out.println( maskedAddress );
-                    String fullIP = "";
                     String[] ipArray = createStringIPArray(maskedAddress);
-                    for( String number : ipArray ){ fullIP += number; }
 
                     testOptions.addRecordRouteIPAddress( convertStringArrayIntoIPArray(ipArray) );
                 }
