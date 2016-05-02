@@ -150,6 +150,10 @@ public class Header {
     // NEEDS TO BE UPDATED TO RETURN A DEEP COPY
     public Map< String, int[] > getData(){ return data; }
 
+    public int getTTLIVE() {
+        return Integer.parseInt( binaryToDecimal(data.get(TTLIVE)) ) ;
+    }
+
     // Method to get the destination address
     public String getDestAddress(){ return binaryIPConvert(data.get(DEST_ADDRESS)); }
 

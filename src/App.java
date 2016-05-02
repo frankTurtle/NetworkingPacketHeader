@@ -197,7 +197,7 @@ public class App {
                     : "Destination";
 
             output.add( String.format("Unknown %s: %s", outputString, testHeader.getDestAddress()) ); //................ built error string
-            writeToFile( output, "output" ); //................................................................................... write error log
+            writeToFile( output, "output" ); //......................................................................... write error log
             System.out.println( "Error, check log" );
             System.exit(0);
         }
@@ -205,7 +205,13 @@ public class App {
             int optionNumber = Integer.parseInt( Header.binaryToDecimal( testOptions.getData().get(OPTION_NUMBER)) );//. get number
             if( optionNumber != 9 && optionNumber != 7 && optionNumber != 0 ){ //....................................... if its a not a 0,7,9 its not legit
                 output.add( String.format("Option Number Error: %d", optionNumber) ); //................................ build error string
-                writeToFile( output, "output" ); //............................................................................... write error log
+                writeToFile( output, "output" ); //..................................................................... write error log
+                System.out.println( "Error, check log" );
+                System.exit(0);
+            }
+            if( testHeader.getTTLIVE() == 1 ){
+                output.add( "Packet Timeout" ); //...................................................................... build error string
+                writeToFile( output, "output" ); //..................................................................... write error log
                 System.out.println( "Error, check log" );
                 System.exit(0);
             }
