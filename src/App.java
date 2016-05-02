@@ -19,8 +19,8 @@ public class App {
     private static RoutingTable routingTable = new RoutingTable();
 
     public static void main( String[] args ){
-        Header testHeader = new Header( "testMTU512", true );
-        Options testOptions = new Options( "testMTU512", true );
+        Header testHeader = new Header( "test", true );
+        Options testOptions = new Options( "test", true );
         ArrayList< String > output = new ArrayList<>();
 
         if( ableToTransmit(testHeader, testOptions, output) ){
@@ -36,7 +36,9 @@ public class App {
 
     // Method to help with output string
     private static String outputStringHelper( Header testHeader, Options testOptions ){
-        return String.format( "%s%n%s%s", getLine(),testHeader.toString(), testOptions.toString() );
+        int optionNum = Integer.parseInt( Header.binaryToDecimal(testOptions.getData().get(OPTION_NUMBER)) );
+        return String.format( "%s%n%s%s",
+                getLine(),testHeader.toString(), (optionNum == 7 || optionNum == 9) ? testOptions.toString() : "" );
     }
 
     // Method to return a line
@@ -48,7 +50,7 @@ public class App {
     }
 
     // Helper method to fragment packets n jazz
-    private static void processFragmentation( int packetSize, int mtu, Header testHeader,
+    private static void  processFragmentation( int packetSize, int mtu, Header testHeader,
                                               Options testOptions, ArrayList<String> output ){
         int totalPackets = (int)Math.ceil( packetSize / mtu + 1.5 ); //.......................................... gets the total number of packets we'll have to send
         int ttl = Integer.parseInt(Header.binaryToDecimal(testHeader.getData().get(TTLIVE)) ) - 1; //............ update the TTL
@@ -99,13 +101,12 @@ public class App {
                 }
             }
 
-            String outputString = ( send == 0 ) //............................................................... if its the end
+            String outputString = ( send == 0 || testOptions.getCopyFlag() == 1 ) //............................. if its the end
                     ? "Fragment " + (send + 1) + outputStringHelper(testHeader, testOptions)  //................. special format output
                         + String.format( "%21s: %s%n", "Data Field", dataField )
                     : "Fragment " + (send + 1) + getLine() + "\n" + testHeader.toString() //..................... normal format output
                         + String.format( "%21s: %s%n", "Data Field", dataField);
             if( !(dataField <= 0) )output.add( outputString ); //................................................ add to output to be printed
-//            output.add( outputString );
         }
     }
 
@@ -224,7 +225,7 @@ public class App {
                 System.exit(0);
             }
             else
-                System.out.println( "File is fragmented, check log." );
+                System.out.println( "File has been processed, check log." );
         }
 
 

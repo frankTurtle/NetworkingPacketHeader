@@ -6,7 +6,6 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.*;
 
 public class Options {
@@ -155,6 +154,7 @@ public class Options {
     public ArrayList< int[] > getSourceRoute(){ return sourceRoute; }
     public int getTotalBytes(){ return totalBytes; }
     public Map<String, int[]> getData() { return data; }
+    public int getCopyFlag(){ return data.get(COPY_FLAG)[0]; }
 
     public void addRecordRouteIPAddress( int[] address ){
         recordRoute.add( address );
