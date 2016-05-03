@@ -15,6 +15,7 @@ public class App {
     private static final String HEADER_LENGTH  = "Header Length";
     private static final String TTLIVE         = "Time To Live";
     private static final String POINTER        = "Pointer";
+    private static final String LENGTH = "Length";
 
     private static RoutingTable routingTable = new RoutingTable();
 
@@ -87,11 +88,13 @@ public class App {
                     String maskedAddress = RoutingTable.convertWithMask(testHeader.getDestAddress());
                     String[] ipArray = createStringIPArray(RoutingTable.getDestinationIPFromAddress(maskedAddress));
                     testOptions.addRecordRouteIPAddress( convertStringArrayIntoIPArray(ipArray) );
+                    incrementLength( testOptions );
                 }
                 else if( num == 9 ){ //.......................................................................... if its a Strict Route
                     String maskedAddress = RoutingTable.convertWithMask(testHeader.getDestAddress());
                     String[] ipArray = createStringIPArray(RoutingTable.getDestinationIPFromAddress(maskedAddress));
                     testOptions.addSourceRouteIPAddress( convertStringArrayIntoIPArray(ipArray) );
+                    incrementLength( testOptions );
                 }
             }
 
@@ -163,6 +166,15 @@ public class App {
         currentPointer += 4; //............................................................................ add four
         String binaryString = Integer.toBinaryString( currentPointer ); //................................. make into binary string
         option.getData().put(POINTER, binaryToArray(binaryString) ); //.................................... convert to array then put into hash
+    }
+
+    // Helper method to increment the Length
+    private static void incrementLength( Options option ){
+        int currentLength = Integer.parseInt(Header.binaryToDecimal(option.getData().get(LENGTH)) ); //... get current Length
+
+        currentLength += 4; //............................................................................ add four
+        String binaryString = Integer.toBinaryString( currentLength ); //................................. make into binary string
+        option.getData().put(HEADER_LENGTH, binaryToArray(binaryString) ); //............................. convert to array then put into hash
     }
 
     // Method to convert a binary string to an array
