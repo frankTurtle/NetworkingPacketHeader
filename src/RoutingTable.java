@@ -45,8 +45,8 @@ public class RoutingTable {
         int[] mtu8   = { 512 },  dest8  = { 110, 49, 33, 80 };
         int[] mtu9   = { 256 },  dest9  = { 110, 36, 32, 80 };
         int[] mtu10  = { 512 }, dest10  = { 110, 37, 32, 82 };
-        int[] mtu11  = { 1500 },dest11  = { 110, 19, 41, 17 };
-        int[] mtu12  = { 1500 },dest12  = { 110, 19, 41, 17 };
+        int[] mtu11  = { 1500 },dest11  = { 110, 23, 40, 17 };
+        int[] mtu12  = { 1500 },dest12  = { 110, 19, 40, 17 };
         int[] mtu13  = { 512 }, dest13  = { 110, 49, 33, 70 };
         int[] mtu14  = { 256 }, dest14  = { 110, 36, 32, 80 };
         int[] mtu15  = { 512 }, dest15  = { 110, 36, 32, 80 };
@@ -54,10 +54,10 @@ public class RoutingTable {
         int[] mtu17  = { 512 }, dest17  = { 110, 37, 32, 82 };
 
         int[][] origin = { origin1, origin2, origin3, origin4, //........ array's to hold everything for easy looping
-                           origin5, origin6, origin6, origin7,
-                           origin8, origin9, origin10, origin11,
-                           origin12, origin13, origin14, origin15,
-                           origin16, origin17
+                           origin5, origin6, origin7, origin8,
+                           origin9, origin10, origin11, origin12,
+                           origin13, origin14, origin15, origin16,
+                           origin17
         };
 
         int[][] port = { port1, port2, port3, port4, port5, port6,
@@ -184,11 +184,9 @@ public class RoutingTable {
         if( ipExistInTable(address) ){ //.............................................................. if its a valid IP
             for( HashMap<String, int[]> entry : temp.getTableRows() ){ //................................... loop over the entries
                 if( createIPString(entry.get(DESTINATION)).equals(address) ){
-                    int port = entry.get(PORT)[0];
                     returnIP = createIPString(entry.get(ORIGIN));
                 }
                 else if( createIPString(entry.get(ORIGIN)).equals(address) ){
-                    int port = entry.get(PORT)[0];
                     returnIP = createIPString(entry.get(DESTINATION));
                 }
             }

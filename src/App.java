@@ -20,8 +20,8 @@ public class App {
     private static RoutingTable routingTable = new RoutingTable();
 
     public static void main( String[] args ){
-        Header testHeader = new Header( "test", true ); //............................... get the packet header
-        Options testOptions = new Options( "test", true ); //............................ get the packet options
+        Header testHeader = new Header( "TestFarPacket", true ); //............................... get the packet header
+        Options testOptions = new Options( "TestFarPacket", true ); //............................ get the packet options
         ArrayList< String > output = new ArrayList<>(); //............................... output array for messages / errors
 
         if( ableToTransmit(testHeader, testOptions, output) ){ //........................ check if able to transmit

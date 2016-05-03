@@ -2,7 +2,7 @@ Fragment 1 --------------------
               Version: 4
         Header Length: 7
          Service Type: 0
-         Total Length: 252
+         Total Length: 508
        Identification: 25
                 Flags: 1
  Fragmentation Offset: 0
@@ -10,28 +10,35 @@ Fragment 1 --------------------
              Protocol: 6
              Checksum: 0
        Source Address: 110.49.33.76
-  Destination Address: 110.32.33.88
-            Copy Flag: 0
+  Destination Address: 110.87.125.234
+            Copy Flag: 1
          Option Class: 0
-        Option Number: 7
+        Option Number: 9
                Length: 7
               Pointer: 8
             Option IP: 0.0.0.0
-            Option IP: 110.33.32.80
-           Data Field: 224
+            Option IP: 110.23.40.17
+           Data Field: 480
 
 Fragment 2 --------------------
               Version: 4
         Header Length: 5
          Service Type: 0
-         Total Length: 220
+         Total Length: 240
        Identification: 25
                 Flags: 0
- Fragmentation Offset: 28
+ Fragmentation Offset: 60
          Time To Live: 6
              Protocol: 6
              Checksum: 0
        Source Address: 110.49.33.76
-  Destination Address: 110.32.33.88
-           Data Field: 200
+  Destination Address: 110.87.125.234
+            Copy Flag: 1
+         Option Class: 0
+        Option Number: 9
+               Length: 7
+              Pointer: 8
+            Option IP: 0.0.0.0
+            Option IP: 110.23.40.17
+           Data Field: 220
 
