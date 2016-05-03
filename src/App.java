@@ -19,8 +19,8 @@ public class App {
     private static RoutingTable routingTable = new RoutingTable();
 
     public static void main( String[] args ){
-        Header testHeader = new Header( "testFarPacket", true );
-        Options testOptions = new Options( "testFarPacket", true );
+        Header testHeader = new Header( "test", true );
+        Options testOptions = new Options( "test", true );
         ArrayList< String > output = new ArrayList<>();
 
         if( ableToTransmit(testHeader, testOptions, output) ){
