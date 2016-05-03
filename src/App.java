@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class App {
-    private static final String OPTION_NUMBER  = "Option Number";
+    private static final String OPTION_NUMBER  = "Option Number"; //.. private final instance variables for keys
     private static final String HEADER_LENGTH  = "Header Length";
     private static final String TTLIVE         = "Time To Live";
     private static final String POINTER        = "Pointer";
@@ -19,13 +19,13 @@ public class App {
     private static RoutingTable routingTable = new RoutingTable();
 
     public static void main( String[] args ){
-        Header testHeader = new Header( "test", true );
-        Options testOptions = new Options( "test", true );
-        ArrayList< String > output = new ArrayList<>();
+        Header testHeader = new Header( "test", true ); //............................... get the packet header
+        Options testOptions = new Options( "test", true ); //............................ get the packet options
+        ArrayList< String > output = new ArrayList<>(); //............................... output array for messages / errors
 
-        if( ableToTransmit(testHeader, testOptions, output) ){
-            int mtu = routingTable.getMtu(testHeader.getDestAddress());
-            int packetSize = ( testHeader.getTotalBytes() > 0 )
+        if( ableToTransmit(testHeader, testOptions, output) ){ //........................ check if able to transmit
+            int mtu = routingTable.getMtu(testHeader.getDestAddress()); //............... get the MTU
+            int packetSize = ( testHeader.getTotalBytes() > 0 ) //....................... get packet size
                     ? testHeader.getTotalBytes()
                     : testOptions.getTotalBytes();
 
@@ -232,7 +232,6 @@ public class App {
             else
                 System.out.println( "File has been processed, check log." );
         }
-
 
         return true;
     }
