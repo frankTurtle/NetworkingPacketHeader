@@ -7,7 +7,7 @@
 00000000000000000000000000000000
 100
 
-Fragment 1 --------------------
+Packet 1 --------------------
               Version: 4
         Header Length: 7
          Service Type: 0
