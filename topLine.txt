@@ -1,0 +1,91 @@
+01000111000000000000010000001000
+00000000000110010000000000000000
+00000111000001100000000000000000
+01101110001100010010000101001100
+01101110001000000010000101011000
+00000111000001110000010000000000
+00000000000000000000000000000000
+1004
+
+Fragment 1 --------------------
+              Version: 4
+        Header Length: 7
+         Service Type: 0
+         Total Length: 252
+       Identification: 25
+                Flags: 1
+ Fragmentation Offset: 0
+         Time To Live: 6
+             Protocol: 6
+             Checksum: 0
+       Source Address: 110.49.33.76
+  Destination Address: 110.32.33.88
+            Copy Flag: 0
+         Option Class: 0
+        Option Number: 7
+               Length: 7
+              Pointer: 8
+            Option IP: 0.0.0.0
+            Option IP: 110.33.32.80
+           Data Field: 224
+
+Fragment 2 --------------------
+              Version: 4
+        Header Length: 5
+         Service Type: 0
+         Total Length: 252
+       Identification: 25
+                Flags: 1
+ Fragmentation Offset: 28
+         Time To Live: 6
+             Protocol: 6
+             Checksum: 0
+       Source Address: 110.49.33.76
+  Destination Address: 110.32.33.88
+           Data Field: 232
+
+Fragment 3 --------------------
+              Version: 4
+        Header Length: 5
+         Service Type: 0
+         Total Length: 252
+       Identification: 25
+                Flags: 1
+ Fragmentation Offset: 56
+         Time To Live: 6
+             Protocol: 6
+             Checksum: 0
+       Source Address: 110.49.33.76
+  Destination Address: 110.32.33.88
+           Data Field: 232
+
+Fragment 4 --------------------
+              Version: 4
+        Header Length: 5
+         Service Type: 0
+         Total Length: 252
+       Identification: 25
+                Flags: 1
+ Fragmentation Offset: 84
+         Time To Live: 6
+             Protocol: 6
+             Checksum: 0
+       Source Address: 110.49.33.76
+  Destination Address: 110.32.33.88
+           Data Field: 232
+
+Fragment 5 --------------------
+              Version: 4
+        Header Length: 5
+         Service Type: 0
+         Total Length: 104
+       Identification: 25
+                Flags: 0
+ Fragmentation Offset: 112
+         Time To Live: 6
+             Protocol: 6
+             Checksum: 0
+       Source Address: 110.49.33.76
+  Destination Address: 110.32.33.88
+           Data Field: 84
+
